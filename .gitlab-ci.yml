@@ -1,0 +1,61 @@
+
+# Djnago React APP Test, Build and Deploy
+stages:
+  - test
+  - build
+  - deploy
+
+include:
+  - project: 'lemken_ee/docker-templates'
+    file: '/gitlab-templates/defaults.yml'
+  - project: 'lemken_ee/docker-templates'
+    file: '/gitlab-templates/kaniko-build.yml'
+  - project: 'lemken_ee/docker-templates'
+    file: '/gitlab-templates/container-deploy.yml'
+
+tests:
+  image: node:16.13.2-alpine3.15
+  stage: test
+  before_script:
+    - npm install
+  script:
+    - echo "no tests"
+    # - npm run test
+  cache:
+    paths:
+      - node_modules/
+
+build_tags:
+  extends: .build_template
+  variables:
+    COMMIT_TAG: $CI_COMMIT_TAG
+    BUILD_IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+  rules:
+    - if: $CI_COMMIT_TAG
+
+build_branch:
+  extends: .build_template
+  variables:
+    BUILD_IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_BRANCH
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+
+# NEEDS
+# SSH_PRIVATE_KEY
+# SSH_HOST
+# SSH_HOST_KEY
+# INTERNAL_HOST
+deploy_app:
+  extends: .deploy_template
+  variables:
+    # On COMMIT_TAG this gets replaced by the tag
+    IMAGE_TAG: $CI_COMMIT_BRANCH
+    SERVICE_NAME: lemken_frontend
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != "main"
+      when: manual
+    - if: $CI_COMMIT_TAG
+      when: manual
