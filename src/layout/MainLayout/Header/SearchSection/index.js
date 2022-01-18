@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // material-ui
 import { makeStyles } from '@material-ui/styles';
@@ -17,6 +17,10 @@ import axios from 'axios';
 import Transitions from '../../../../ui-component/extended/Transitions';
 import api from '../../../../utils/api';
 import configData from '../../../../config';
+import { store } from '../../../../store';
+import { fetchAutoCompleteData } from '../../../../store/actions';
+import { LOAD_AUTOCOMPLETE_DATA } from '../../../../store/actions';
+import { settingLabels } from '../../../../store/actions';
 
 // assets
 import { IconAdjustmentsHorizontal, IconSearch, IconX } from '@tabler/icons';
@@ -90,69 +94,69 @@ const useStyles = makeStyles((theme) => ({
 
 //-----------------------|| SEARCH INPUT ||-----------------------//
 
+const { dispatch } = store;
+
 const SearchSection = () => {
     const classes = useStyles();
-    const [value, setValue] = useState('');
+    const [searchValue, setSearchValue] = useState('');
+    const [inputValue,setInputValue] = useState('')
     const [responseData, setResponseData] = useState([]);
     const [autoCompleteData, setAutoCompleteData] = useState([]);
-    const checkingUniqueData = (label,data)=>{
-        data.forEach(elem=>{
-            if(elem.label==label){
+    const dispatch = useDispatch();
+    const checkingUniqueData = (label, data) => {
+        data.forEach((elem) => {
+            if (elem.label == label) {
                 return false;
             }
-        })
+        });
         return true;
-    }
-
-    const settingLabels = (data) => {
-        data.forEach(elem=>{
-     
-         
-            if (elem.SerialNumber) {
-                var temp = { label: elem.SerialNumber, SerialNumber: elem.SerialNumber };
-                if(checkingUniqueData(elem.SerialNumber,autoCompleteData)){
-                   
-
-                    setAutoCompleteData((prevData) => [...prevData, temp]);
-                }
-            }
-            if (elem.device_name) {
-                var temp = { label: elem.device_name, SerialNumber: elem.SerialNumber };
-                if(checkingUniqueData(elem.SerialNumber,autoCompleteData)){
-
-                    setAutoCompleteData((prevData) => [...prevData, temp]);
-                }
-            }
-            if (elem.machineSerialNo) {
-                var temp = { label: elem.machineSerialNo, SerialNumber: elem.SerialNumber };
-                if(checkingUniqueData(elem.SerialNumber,autoCompleteData)){
-                
-                    setAutoCompleteData((prevData) => [...prevData, temp]);
-                }
-                    
-            }
-        })
     };
+
+    // const settingLabels = (data) => {
+    //     data.forEach((elem) => {
+    //         if (elem.SerialNumber) {
+    //             var temp = { label: elem.SerialNumber, SerialNumber: elem.SerialNumber };
+    //             if (checkingUniqueData(elem.SerialNumber, autoCompleteData)) {
+    //                 setAutoCompleteData((prevData) => [...prevData, temp]);
+    //             }
+    //         }
+    //         if (elem.device_name) {
+    //             var temp = { label: elem.device_name, SerialNumber: elem.SerialNumber };
+    //             if (checkingUniqueData(elem.SerialNumber, autoCompleteData)) {
+    //                 setAutoCompleteData((prevData) => [...prevData, temp]);
+    //             }
+    //         }
+    //         if (elem.machineSerialNo) {
+    //             var temp = { label: elem.machineSerialNo, SerialNumber: elem.SerialNumber };
+    //             if (checkingUniqueData(elem.SerialNumber, autoCompleteData)) {
+    //                 setAutoCompleteData((prevData) => [...prevData, temp]);
+    //             }
+    //         }
+    //     });
+    // };
     useEffect(() => {
         api.get(configData.API_SERVER + '/MyCCIs/').then((response) => {
             setResponseData(response.data);
             var usuableData = response.data;
 
-            settingLabels(usuableData);
+            settingLabels(usuableData, dispatch);
+
+            const state = store.getState();
+            setAutoCompleteData(state.autoComplete);
         });
     }, []);
-
-
 
     return (
         <React.Fragment>
             <Autocomplete
                 className={classes.searchControl}
+                inputValue={inputValue}
+                onInputChange={e=>{setInputValue(e.target.value)}}
                 id="country-select-demo"
                 sx={{ width: 300 }}
                 options={autoCompleteData}
                 autoHighlight
-                onChange={(event, value) => console.log(value)}
+                onChange={(event, value) => setSearchValue(value)}
                 getOptionLabel={(option) => option.label}
                 renderInput={(params) => (
                     <TextField
@@ -164,6 +168,7 @@ const SearchSection = () => {
                         }}
                     />
                 )}
+                open={inputValue.length > 2}
             />
 
             <IconButton edge="start" size="large" color="primary" aria-label="search serial number" component="span">

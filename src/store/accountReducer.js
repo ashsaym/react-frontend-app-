@@ -6,6 +6,7 @@ export const initialState = {
     refresh_token: '',
     isLoggedIn: false,
     isInitialized: false,
+    email:""
    
 };
 
@@ -14,13 +15,14 @@ export const initialState = {
 const accountReducer = (state = initialState, action) => {
     switch (action.type) {
         case ACCOUNT_INITIALIZE: {
-            const { isLoggedIn, access_token, refresh_token } = action.payload;
+            const { isLoggedIn, access_token, refresh_token,email } = action.payload;
             return {
                 ...state,
                 isLoggedIn,
                 isInitialized: true,
                 access_token,
-                refresh_token
+                refresh_token,
+                email
             };
         }
         case LOGIN: {

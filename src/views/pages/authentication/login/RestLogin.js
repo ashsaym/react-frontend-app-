@@ -119,7 +119,8 @@ const RestLogin = (props, { ...others }) => {
                                         payload: {
                                             isLoggedIn: true,
                                             access_token: response.data.access,
-                                            refresh_token: response.data.refresh
+                                            refresh_token: response.data.refresh,
+                                            email:values.email,
                                         }
                                     });
                                     if (scriptedRef.current) {
