@@ -93,13 +93,56 @@ const useStyles = makeStyles((theme) => ({
 const SearchSection = () => {
     const classes = useStyles();
     const [value, setValue] = useState('');
-    const [data, setData] = useState([]);
-    const account = useSelector((state) => state.account);
+    const [responseData, setResponseData] = useState([]);
+    const [autoCompleteData, setAutoCompleteData] = useState([]);
+    const checkingUniqueData = (label,data)=>{
+        data.forEach(elem=>{
+            if(elem.label==label){
+                return false;
+            }
+        })
+        return true;
+    }
+
+    const settingLabels = (data) => {
+        data.forEach(elem=>{
+     
+         
+            if (elem.SerialNumber) {
+                var temp = { label: elem.SerialNumber, SerialNumber: elem.SerialNumber };
+                if(checkingUniqueData(elem.SerialNumber,autoCompleteData)){
+                   
+
+                    setAutoCompleteData((prevData) => [...prevData, temp]);
+                }
+            }
+            if (elem.device_name) {
+                var temp = { label: elem.device_name, SerialNumber: elem.SerialNumber };
+                if(checkingUniqueData(elem.SerialNumber,autoCompleteData)){
+
+                    setAutoCompleteData((prevData) => [...prevData, temp]);
+                }
+            }
+            if (elem.machineSerialNo) {
+                var temp = { label: elem.machineSerialNo, SerialNumber: elem.SerialNumber };
+                if(checkingUniqueData(elem.SerialNumber,autoCompleteData)){
+                
+                    setAutoCompleteData((prevData) => [...prevData, temp]);
+                }
+                    
+            }
+        })
+    };
     useEffect(() => {
-        axios
-            .get(configData.API_SERVER + '/MyCCIs/', { headers: { Authorization: 'Bearer ' + account.access_token } })
-            .then((response) => setData(response.data));
-    });
+        api.get(configData.API_SERVER + '/MyCCIs/').then((response) => {
+            setResponseData(response.data);
+            var usuableData = response.data;
+
+            settingLabels(usuableData);
+        });
+    }, []);
+
+
 
     return (
         <React.Fragment>
@@ -107,10 +150,10 @@ const SearchSection = () => {
                 className={classes.searchControl}
                 id="country-select-demo"
                 sx={{ width: 300 }}
-                options={data}
+                options={autoCompleteData}
                 autoHighlight
                 onChange={(event, value) => console.log(value)}
-                getOptionLabel={(option) => option.SerialNumber}
+                getOptionLabel={(option) => option.label}
                 renderInput={(params) => (
                     <TextField
                         {...params}
@@ -122,44 +165,7 @@ const SearchSection = () => {
                     />
                 )}
             />
-            <Autocomplete
-                className={classes.searchControl}
-                id="country-select-demo"
-                sx={{ width: 300 }}
-                options={data}
-                autoHighlight
-                onChange={(event, value) => console.log(value)}
-                getOptionLabel={(option) => option.device_name}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Device Name"
-                        inputProps={{
-                            ...params.inputProps,
-                            autoComplete: 'new-password' // disable autocomplete and autofill
-                        }}
-                    />
-                )}
-            />
-            <Autocomplete
-                className={classes.searchControl}
-                id="country-select-demo"
-                sx={{ width: 300 }}
-                options={data}
-                autoHighlight
-                onChange={(event, value) => console.log(value)}
-                getOptionLabel={(option) => option.machineSerialNo}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Machine Serial No."
-                        inputProps={{
-                            ...params.inputProps,
-                            autoComplete: 'new-password' // disable autocomplete and autofill
-                        }}
-                    />
-                )}
-            />
+
             <IconButton edge="start" size="large" color="primary" aria-label="search serial number" component="span">
                 <SearchIcon fontSize="large" />
             </IconButton>

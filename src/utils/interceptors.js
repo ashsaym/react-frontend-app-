@@ -10,6 +10,7 @@ const state = store.getState();
 const { dispatch } = store;
 
 const onRequest = (config) => {
+    const state = store.getState();
     const access_token = state.account.access_token;
 
     config.headers['Authorization'] = `Bearer ${access_token}`;
@@ -26,10 +27,11 @@ const onResponse = (response) => {
 };
 
 const onResponseError = async (error) => {
-
+  
     if (error.response) {
         // Access Token was expired
-        if (error.response.status === 401 && error.response.data.message === 'jwt expired') {
+        if (error.response.status === 401 && error.response.data.messages[0].message === 'Token is invalid or expired') {
+            const state = store.getState();
             const access_token = state.account.access_token;
             const refresh_token = state.account.refresh_token;
 
