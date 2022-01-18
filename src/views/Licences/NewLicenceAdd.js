@@ -30,7 +30,7 @@ const NewLicenceAdd = () => {
     const [buttonLoading, setButtonLoading] = useState(false);
     const [adminButtonLoading, setAdminButtonLoading] = useState(false);
     const fetchLicenceTypes = () => {
-        api.get(configData.API_SERVER + '/LicenceTypes/')
+        api.get(configData.API_SERVER + 'LicenceTypes/')
             .then((response) => {
                 setLicenceTypes(response.data);
             })
@@ -71,7 +71,7 @@ const NewLicenceAdd = () => {
                     expired_on: expireDate,
                     added_by: licenceExistence.data[0].added_by
                 });
-                console.log('uppdated');
+                console.log('updated');
                 console.log(res);
             }
         } catch (error) {

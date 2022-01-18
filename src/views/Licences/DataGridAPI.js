@@ -38,7 +38,7 @@ export default function DataGridAPI() {
     }, []);
 
     const fetchLicenceTypes = () => {
-        api.get(configData.API_SERVER + '/LicenceTypes/')
+        api.get(configData.API_SERVER + 'LicenceTypes/')
             .then((response) => {
                 setLicenceTypes(response.data);
             })

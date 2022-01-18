@@ -135,7 +135,7 @@ const SearchSection = () => {
     //     });
     // };
     useEffect(() => {
-        api.get(configData.API_SERVER + '/MyCCIs/').then((response) => {
+        api.get(configData.API_SERVER + 'MyCCIs/').then((response) => {
             setResponseData(response.data);
             var usuableData = response.data;
 
