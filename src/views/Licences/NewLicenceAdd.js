@@ -40,22 +40,40 @@ const NewLicenceAdd = () => {
     };
     const addLicenceType = async () => {
         setButtonLoading(true);
-
+        console.log({
+            Serial_Number: selectedSerialNo,
+            license_type: selectedLicenceType,
+            modified_by: user.email,
+            expired_on: expireDate,
+            added_by: user.email
+        });
         try {
             const licenceExistence = await api.get(
                 configData.API_SERVER + 'Licences/check/' + selectedSerialNo + '&&' + selectedLicenceType
             );
-            console.log(licenceExistence);
 
-            // if (licenceExistence.data.length == 0) {
-            //     const res = await api.post(configData.API_SERVER + '/LicenceTypes/', {
-            //         Serial_Number: selectedSerialNo,
-            //         license_type: selectedLicenceType,
-            //         modified_by: user.email,
-            //         expired_on: expireDate,
-            //         added_by: user.email
-            //     });
-            // }
+            if (licenceExistence.data[0].length == 0) {
+                const res = await api.post(configData.API_SERVER + 'Licences/', {
+                    Serial_Number: selectedSerialNo,
+                    license_type: selectedLicenceType,
+                    modified_by: user.email,
+                    expired_on: expireDate,
+                    added_by: user.email
+                });
+                console.log('added');
+                console.log(res);
+            } else {
+                const res = await api.put(configData.API_SERVER + 'Licences/'+licenceExistence.data[0].id, {
+                    
+                    Serial_Number: selectedSerialNo,
+                    license_type: selectedLicenceType,
+                    modified_by: user.email,
+                    expired_on: expireDate,
+                    added_by: licenceExistence.data[0].added_by
+                });
+                console.log('uppdated');
+                console.log(res);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -67,7 +85,7 @@ const NewLicenceAdd = () => {
         api.get(configData.API_SERVER + 'Users/' + user.email).then((response) => {
             if (response.data.is_superuser) {
                 setAdminUser(true);
-                console.log('you are adming');
+                console.log('you are admin');
             }
         });
     }, []);
