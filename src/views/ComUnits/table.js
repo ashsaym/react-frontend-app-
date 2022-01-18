@@ -1,5 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
+import api from '../../utils/api'
 import configData from '../../config';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -26,7 +27,7 @@ const TableData = () => {
 
     const getComUnits = async ()=>{
         try{
-            const res = await axios.get(configData.API_SERVER + 'CommunicationUnits/',{ headers: { "Authorization": 'Token ' + (account.token) }});
+            const res = await api.get(configData.API_SERVER + 'CommunicationUnits/')  //,{ headers: { "Authorization": 'Token ' + (account.token) }});
             setComUnits(res.data);
             setLoading(true);
         }

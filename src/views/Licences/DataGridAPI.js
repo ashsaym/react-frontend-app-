@@ -3,6 +3,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import configData from '../../config';
 import { useSelector } from 'react-redux';
+import api from '../../utils/api'
+
 
 const columns = [
     {
@@ -72,9 +74,9 @@ export default function DataGridAPI() {
     const [tableData, setTableData] = useState([])
     const account = useSelector((state) => state.account);
     useEffect(() => {
-        fetch(configData.API_SERVER + 'Licences/',{ headers: { "Authorization": 'Token ' + (account.token) }})
-            .then((data) => data.json())
-            .then((data) => setTableData(data))
+        api.get(configData.API_SERVER + 'Licences/') //,{ headers: { "Authorization": 'Token ' + (account.token) }})
+            
+            .then((response) => setTableData(response.data))
     }, [])
     return (
         <div style={{ height: 1200, width: 'auto' }}>

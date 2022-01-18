@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
+import api from '../../../../utils/api'
 import configData from '../../../../config';
 
 // material-ui
@@ -106,17 +106,21 @@ const RestLogin = (props, { ...others }) => {
                 })}
                 onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        axios
-                            .post( configData.API_SERVER + 'Token/auth/', {
-                                password: values.password,
-                                username: values.email
+                        api
+                            .post(configData.API_SERVER + 'Token/get/', {
+                                email: values.email,
+                                password: values.password
                             })
                             .then(function (response) {
-                                if (response.data.success) {
+                                if (response.data.refresh) {
                                     console.log(response.data);
                                     dispatcher({
                                         type: ACCOUNT_INITIALIZE,
-                                        payload: { isLoggedIn: true, user: response.data.user, token: response.data.token }
+                                        payload: {
+                                            isLoggedIn: true,
+                                            access_token: response.data.access,
+                                            refresh_token: response.data.refresh
+                                        }
                                     });
                                     if (scriptedRef.current) {
                                         setStatus({ success: true });
