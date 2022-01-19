@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline, StyledEngineProvider } from '@material-ui/core';
@@ -13,10 +13,22 @@ import theme from './themes';
 // project imports
 import NavigationScroll from './layout/NavigationScroll';
 
+import api from './utils/api';
+import configData from './config';
+import { settingLabels } from './store/actions';
+
 //-----------------------|| APP ||-----------------------//
 
 const App = () => {
+    const dispatch = useDispatch();
     const customization = useSelector((state) => state.customization);
+    useEffect(() => {
+        api.get(configData.API_SERVER + 'MyCCIs/').then((response) => {
+            var usuableData = response.data;
+
+            settingLabels(usuableData, dispatch);
+        });
+    });
 
     return (
         <StyledEngineProvider injectFirst>

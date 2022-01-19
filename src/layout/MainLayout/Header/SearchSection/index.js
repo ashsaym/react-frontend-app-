@@ -98,10 +98,12 @@ const { dispatch } = store;
 
 const SearchSection = () => {
     const classes = useStyles();
+    const autoCompleteData = useSelector((state) => state.autoComplete);
     const [searchValue, setSearchValue] = useState('');
-    const [inputValue,setInputValue] = useState('')
+    const [autoCompleteShow, setAutoCompleteShow] = useState(false);
+    const [inputValue, setInputValue] = useState('');
     const [responseData, setResponseData] = useState([]);
-    const [autoCompleteData, setAutoCompleteData] = useState([]);
+   // const [autoCompleteData, setAutoCompleteData] = useState([]);
     const dispatch = useDispatch();
     const checkingUniqueData = (label, data) => {
         data.forEach((elem) => {
@@ -135,23 +137,31 @@ const SearchSection = () => {
     //     });
     // };
     useEffect(() => {
-        api.get(configData.API_SERVER + 'MyCCIs/').then((response) => {
-            setResponseData(response.data);
-            var usuableData = response.data;
+        // api.get(configData.API_SERVER + 'MyCCIs/').then((response) => {
+        //     setResponseData(response.data);
+        //     var usuableData = response.data;
 
-            settingLabels(usuableData, dispatch);
+        //     settingLabels(usuableData, dispatch);
 
-            const state = store.getState();
-            setAutoCompleteData(state.autoComplete);
-        });
+        // });
+        // const state = store.getState();
+        // setAutoCompleteData(state.autoComplete);
     }, []);
 
     return (
         <React.Fragment>
             <Autocomplete
+                open={autoCompleteShow}
                 className={classes.searchControl}
                 inputValue={inputValue}
-                onInputChange={e=>{setInputValue(e.target.value)}}
+                onInputChange={(event, value) => {
+                    //   console.log(value);
+                    setInputValue(value);
+                    if (value.length > 2) {
+                        setAutoCompleteShow(true);
+                    }
+                }}
+                onClose={() => setAutoCompleteShow(false)}
                 id="country-select-demo"
                 sx={{ width: 300 }}
                 options={autoCompleteData}
@@ -168,7 +178,7 @@ const SearchSection = () => {
                         }}
                     />
                 )}
-                open={inputValue.length > 2}
+              
             />
 
             <IconButton edge="start" size="large" color="primary" aria-label="search serial number" component="span">

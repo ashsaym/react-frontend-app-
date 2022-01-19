@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { fabClasses, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import api from '../../utils/api';
+import { store } from '../../store';
 
 import { Button, Box } from '@mui/material';
 import { TextField } from '@mui/material';
@@ -29,14 +30,39 @@ export default function DataGridAPI() {
     const [selectedLicence, setSelectedLicence] = useState({ comments: '' });
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const [licenceTypes, setLicenceTypes] = useState([]);
+    const [adminUser, setAdminUser] = useState(false);
     const account = useSelector((state) => state.account);
 
     useEffect(() => {
         api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data));
-
+        const user = store.getState().account;
+        api.get(configData.API_SERVER + 'Users/check/' + user.email).then((response) => {
+            if (response.data[0].is_superuser) {
+                setAdminUser(true);
+                console.log('you are admin');
+            }
+        });
         fetchLicenceTypes();
     }, []);
+    const saveLicenceData = async () => {
+        const user = store.getState().account;
 
+        try {
+            const res = await api.put(configData.API_SERVER + 'Licences/' + selectedLicence.id + '/', {
+                expired: selectedLicence.expired,
+                license_type: selectedLicence.license_type,
+                Serial_Number: selectedLicence.Serial_Number,
+                comments: selectedLicence.comments,
+                expired_on: new Date(selectedLicence.expired_on),
+                added_by: selectedLicence.added_by,
+                modified_by: user.email
+            });
+            console.log('updated');
+        } catch (err) {
+            console.log(err);
+        }
+        setShowDialog(false);
+    };
     const fetchLicenceTypes = () => {
         api.get(configData.API_SERVER + 'LicenceTypes/')
             .then((response) => {
@@ -46,6 +72,17 @@ export default function DataGridAPI() {
                 alert(error.message);
             });
     };
+    const  deleteHandler = async()=>{
+        try{
+            const res = await api.delete(configData.API_SERVER + 'Licences/' + selectedLicence.id + '/');
+            console.log('successfully deleted')
+            
+
+        }catch(err){
+            console.error(err.message)
+        }
+        setShowAlertDialog(false)
+    }
 
     const columns = [
         {
@@ -59,8 +96,8 @@ export default function DataGridAPI() {
                     <IconButton
                         color="primary"
                         onClick={() => {
-                           
                             setSelectedLicence(params.row);
+
                             setShowDialog(true);
                         }}
                     >
@@ -79,13 +116,13 @@ export default function DataGridAPI() {
             field: 'expired',
             headerName: 'Expired',
             width: 80,
-            editable: true
+      
         },
         {
             field: 'license_type',
             headerName: 'Type',
             width: 80,
-            editable: true
+          
         },
         {
             field: 'expired_on',
@@ -99,7 +136,7 @@ export default function DataGridAPI() {
             headerName: 'Comments',
             sortable: false,
             width: 100,
-            editable: true
+          
         },
         {
             field: 'updated_on',
@@ -196,6 +233,8 @@ export default function DataGridAPI() {
                                 value={selectedLicence.expired_on}
                                 minDate={new Date()}
                                 onChange={(newValue) => {
+                                    console.log(newValue);
+                                    console.log(selectedLicence.expired_on);
                                     setSelectedLicence((prevData) => {
                                         return { ...prevData, expired_on: newValue };
                                     });
@@ -217,17 +256,19 @@ export default function DataGridAPI() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        color="error"
-                        variant="contained"
-                        onClick={() => {
-                            setShowDialog(false);
-                            setShowAlertDialog(true);
-                        }}
-                    >
-                        Delete
-                    </Button>
-                    <Button>Save</Button>
+                    {adminUser && (
+                        <Button
+                            color="error"
+                            variant="contained"
+                            onClick={() => {
+                                setShowDialog(false);
+                                setShowAlertDialog(true);
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    )}
+                    <Button onClick={saveLicenceData}>Save</Button>
                     <Button
                         onClick={() => {
                             setShowDialog(false);
@@ -258,7 +299,7 @@ export default function DataGridAPI() {
                     >
                         No
                     </Button>
-                    <Button color="error">Yes</Button>
+                    <Button color="error" onClick={deleteHandler}>Yes</Button>
                 </DialogActions>
             </Dialog>
             <DataGrid rows={tableData} columns={columns} pageSize={20} rowsPerPageOptions={[20]} />
