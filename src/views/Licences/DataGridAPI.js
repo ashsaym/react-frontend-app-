@@ -3,6 +3,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import configData from '../../config';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import { fabClasses, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import api from '../../utils/api';
@@ -25,11 +27,13 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 export default function DataGridAPI() {
+    const history = useHistory();
     const [tableData, setTableData] = useState([]);
     const [showDialog, setShowDialog] = useState(false);
     const [selectedLicence, setSelectedLicence] = useState({ comments: '' });
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const [licenceTypes, setLicenceTypes] = useState([]);
+    const [submitted,setSubmitted] = useState('')
     const [adminUser, setAdminUser] = useState(false);
     const account = useSelector((state) => state.account);
 
@@ -44,8 +48,12 @@ export default function DataGridAPI() {
         });
         fetchLicenceTypes();
     }, []);
+    useEffect(()=>{
+        api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data));
+    },[submitted])
     const saveLicenceData = async () => {
         const user = store.getState().account;
+        setSubmitted(prev=>prev+'a')
 
         try {
             const res = await api.put(configData.API_SERVER + 'Licences/' + selectedLicence.id + '/', {
@@ -72,17 +80,15 @@ export default function DataGridAPI() {
                 alert(error.message);
             });
     };
-    const  deleteHandler = async()=>{
-        try{
+    const deleteHandler = async () => {
+        try {
             const res = await api.delete(configData.API_SERVER + 'Licences/' + selectedLicence.id + '/');
-            console.log('successfully deleted')
-            
-
-        }catch(err){
-            console.error(err.message)
+            console.log('successfully deleted');
+        } catch (err) {
+            console.error(err.message);
         }
-        setShowAlertDialog(false)
-    }
+        setShowAlertDialog(false);
+    };
 
     const columns = [
         {
@@ -110,19 +116,20 @@ export default function DataGridAPI() {
         {
             field: 'Serial_Number',
             headerName: 'Serial Number',
-            width: 150
+            width: 150,
+            renderCell: (params) => {
+                return <Link to={'/details/' + params.row.Serial_Number}>{params.row.Serial_Number}</Link>;
+            }
         },
         {
             field: 'expired',
             headerName: 'Expired',
-            width: 80,
-      
+            width: 80
         },
         {
             field: 'license_type',
             headerName: 'Type',
-            width: 80,
-          
+            width: 80
         },
         {
             field: 'expired_on',
@@ -135,8 +142,7 @@ export default function DataGridAPI() {
             field: 'comments',
             headerName: 'Comments',
             sortable: false,
-            width: 100,
-          
+            width: 100
         },
         {
             field: 'updated_on',
@@ -249,8 +255,9 @@ export default function DataGridAPI() {
                         label="Comments"
                         value={selectedLicence.comments}
                         onChange={(e) => {
+                         
                             setSelectedLicence((prevData) => {
-                                return { ...prevData, comments: e.target.data };
+                                return { ...prevData, comments: e.target.value };
                             });
                         }}
                     />
@@ -299,7 +306,9 @@ export default function DataGridAPI() {
                     >
                         No
                     </Button>
-                    <Button color="error" onClick={deleteHandler}>Yes</Button>
+                    <Button color="error" onClick={deleteHandler}>
+                        Yes
+                    </Button>
                 </DialogActions>
             </Dialog>
             <DataGrid rows={tableData} columns={columns} pageSize={20} rowsPerPageOptions={[20]} />

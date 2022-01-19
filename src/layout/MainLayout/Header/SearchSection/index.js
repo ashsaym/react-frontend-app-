@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 
 // material-ui
 import { makeStyles } from '@material-ui/styles';
@@ -97,13 +98,14 @@ const useStyles = makeStyles((theme) => ({
 const { dispatch } = store;
 
 const SearchSection = () => {
+    const history = useHistory()
     const classes = useStyles();
     const autoCompleteData = useSelector((state) => state.autoComplete);
     const [searchValue, setSearchValue] = useState('');
     const [autoCompleteShow, setAutoCompleteShow] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [responseData, setResponseData] = useState([]);
-   // const [autoCompleteData, setAutoCompleteData] = useState([]);
+    // const [autoCompleteData, setAutoCompleteData] = useState([]);
     const dispatch = useDispatch();
     const checkingUniqueData = (label, data) => {
         data.forEach((elem) => {
@@ -140,9 +142,7 @@ const SearchSection = () => {
         // api.get(configData.API_SERVER + 'MyCCIs/').then((response) => {
         //     setResponseData(response.data);
         //     var usuableData = response.data;
-
         //     settingLabels(usuableData, dispatch);
-
         // });
         // const state = store.getState();
         // setAutoCompleteData(state.autoComplete);
@@ -166,7 +166,11 @@ const SearchSection = () => {
                 sx={{ width: 300 }}
                 options={autoCompleteData}
                 autoHighlight
-                onChange={(event, value) => setSearchValue(value)}
+                onChange={(event, value) => {
+                    setSearchValue(value);
+               
+                    history.push('/details/' + value.SerialNumber)
+                }}
                 getOptionLabel={(option) => option.label}
                 renderInput={(params) => (
                     <TextField
@@ -178,7 +182,6 @@ const SearchSection = () => {
                         }}
                     />
                 )}
-              
             />
 
             <IconButton edge="start" size="large" color="primary" aria-label="search serial number" component="span">

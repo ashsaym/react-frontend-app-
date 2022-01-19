@@ -15,7 +15,7 @@ import NavigationScroll from './layout/NavigationScroll';
 
 import api from './utils/api';
 import configData from './config';
-import { settingLabels } from './store/actions';
+import { fetchAutoCompleteData } from './store/actions';
 
 //-----------------------|| APP ||-----------------------//
 
@@ -23,10 +23,10 @@ const App = () => {
     const dispatch = useDispatch();
     const customization = useSelector((state) => state.customization);
     useEffect(() => {
-        api.get(configData.API_SERVER + 'MyCCIs/').then((response) => {
+        api.get(configData.API_SERVER + 'SearchList/').then((response) => {
             var usuableData = response.data;
 
-            settingLabels(usuableData, dispatch);
+            fetchAutoCompleteData(usuableData, dispatch);
         });
     });
 

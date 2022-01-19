@@ -23,7 +23,7 @@ export const refreshToken = (accessToken) => (dispatch) => {
     });
 };
 
-export const fetchAutoCompleteData = (autoCompleteData) => (dispatch) => {
+export const fetchAutoCompleteData = (autoCompleteData, dispatch) => {
     dispatch({
         type: LOAD_AUTOCOMPLETE_DATA,
         payload: autoCompleteData
@@ -31,39 +31,3 @@ export const fetchAutoCompleteData = (autoCompleteData) => (dispatch) => {
 };
 
 //urtil fucntions
-
-const checkingUniqueData = (label, data) => {
-    data.forEach((elem) => {
-        if (elem.label == label) {
-            return false;
-        }
-    });
-    return true;
-};
-
-export const settingLabels = (data, dispatcher) => {
-    data.forEach((elem) => {
-        const state = store.getState();
-    
-        if (elem.SerialNumber) {
-            var temp = { label: elem.SerialNumber, SerialNumber: elem.SerialNumber };
-            if (checkingUniqueData(elem.SerialNumber, state.autoComplete)) {
-                dispatcher({ type: UPDATE_DATA, payload: temp });
-                
-            }
-        }
-        if (elem.device_name) {
-            var temp = { label: elem.device_name, SerialNumber: elem.SerialNumber };
-            if (checkingUniqueData(elem.SerialNumber, state.autoComplete)) {
-                dispatcher({ type: UPDATE_DATA, payload: temp });
-            }
-        }
-        if (elem.machineSerialNo) {
-            var temp = { label: elem.machineSerialNo, SerialNumber: elem.SerialNumber };
-            if (checkingUniqueData(elem.SerialNumber, state.autoComplete)) {
-                dispatcher({ type: UPDATE_DATA, payload: temp });
-            }
-        }
-    });
-   
-};

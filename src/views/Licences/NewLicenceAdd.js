@@ -48,13 +48,12 @@ const NewLicenceAdd = () => {
         const user = store.getState().account;
 
         setButtonLoading(true);
-
+      
         try {
             const licenceExistence = await api.get(
-                configData.API_SERVER + 'Licences/check/' + selectedSerialNo + '&&' + selectedLicenceType
+                configData.API_SERVER + 'Licences/check/type/' + selectedSerialNo + '&&' + selectedLicenceType
             );
-           
-        
+
             if (licenceExistence.data.length == 0) {
                 const res = await api.post(configData.API_SERVER + 'Licences/', {
                     Serial_Number: selectedSerialNo,
@@ -82,17 +81,19 @@ const NewLicenceAdd = () => {
     };
 
     const addNewLicenceType = () => {
+        setAdminButtonLoading(true);
         const user = store.getState().account;
         api.post(configData.API_SERVER + 'LicenceTypes/', {
             LicenceType: newLicence,
             added_by: user.email
         })
             .then((res) => {
-                console.log("added new Licence");
+                console.log('added new Licence');
             })
             .catch((err) => {
                 console.error(err);
             });
+        setAdminButtonLoading(false);
     };
     useEffect(() => {
         fetchLicenceTypes();
@@ -137,7 +138,7 @@ const NewLicenceAdd = () => {
                         inputValue={inputValue}
                         onInputChange={(event, value) => {
                             setInputValue(value);
-                            console.log(autoCompleteData)
+
                             if (value.length > 2) {
                                 setAutoCompleteShow(true);
                             }
@@ -185,7 +186,6 @@ const NewLicenceAdd = () => {
                             minDate={new Date()}
                             onChange={(newValue) => {
                                 setExpireDate(newValue);
-                               
                             }}
                             renderInput={(params) => <TextField {...params} />}
                         />

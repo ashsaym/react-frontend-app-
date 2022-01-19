@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link,useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import api from '../../../../utils/api'
-import configData from '../../../../config';
+import api from '../../../../../utils/api';
+import configData from '../../../../../config';
 
 // material-ui
 import { makeStyles } from '@material-ui/styles';
@@ -27,9 +27,9 @@ import { Formik } from 'formik';
 import axios from 'axios';
 
 // project imports
-import useScriptRef from '../../../../hooks/useScriptRef';
-import AnimateButton from '../../../../ui-component/extended/AnimateButton';
-import { ACCOUNT_INITIALIZE } from './../../../../store/actions';
+import useScriptRef from '../../../../../hooks/useScriptRef';
+import AnimateButton from '../../../../../ui-component/extended/AnimateButton';
+import { ACCOUNT_INITIALIZE } from './../../../../../store/actions';
 
 // assets
 import Visibility from '@material-ui/icons/Visibility';
@@ -79,9 +79,10 @@ const useStyles = makeStyles((theme) => ({
 const RestLogin = (props, { ...others }) => {
     const classes = useStyles();
     const dispatcher = useDispatch();
-    const history = useHistory()
+    const history = useHistory();
 
     const scriptedRef = useScriptRef();
+    const [validEmail, setValidEmail] = React.useState(true);
     const [checked, setChecked] = React.useState(true);
 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -98,49 +99,30 @@ const RestLogin = (props, { ...others }) => {
             <Formik
                 initialValues={{
                     email: '',
-                    password: '',
+
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
+                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
                 })}
                 onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        api
-                            .post(configData.API_SERVER + 'Token/get/', {
-                                email: values.email,
-                                password: values.password
+                        axios
+                            .post(configData.API_SERVER + 'password/reset/', {
+                                email: values.email
                             })
                             .then(function (response) {
-                                if (response.data.refresh) {
-                                    console.log(response.data);
-                                    dispatcher({
-                                        type: ACCOUNT_INITIALIZE,
-                                        payload: {
-                                            isLoggedIn: true,
-                                            access_token: response.data.access,
-                                            refresh_token: response.data.refresh,
-                                            email:values.email,
-                                        }
-                                    });
-                                    if (scriptedRef.current) {
-                                        setStatus({ success: true });
-                                        setSubmitting(false);
-                                    }
-                                } else {
-                                    setStatus({ success: false });
-                                    setErrors({ submit: response.data.non_field_errors });
-                                    setSubmitting(false);
-                                }
+                                history.push('/login/forgot/verfication')
                             })
                             .catch(function (error) {
+                                setValidEmail(false);
                                 setStatus({ success: false });
                                 setErrors({ submit: error.response.data.non_field_errors });
                                 setSubmitting(false);
                             });
+
+                         
                     } catch (err) {
-                        console.error(err);
                         if (scriptedRef.current) {
                             setStatus({ success: false });
                             setErrors({ submit: err.message });
@@ -167,6 +149,7 @@ const RestLogin = (props, { ...others }) => {
                                     }
                                 }}
                             />
+                            {!validEmail && <Typography color="error">Invalid Email!</Typography>}
                             {touched.email && errors.email && (
                                 <FormHelperText error id="standard-weight-helper-text-email-login">
                                     {' '}
@@ -175,64 +158,6 @@ const RestLogin = (props, { ...others }) => {
                             )}
                         </FormControl>
 
-                        <FormControl fullWidth error={Boolean(touched.password && errors.password)} className={classes.loginInput}>
-                            <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-password-login"
-                                type={showPassword ? 'text' : 'password'}
-                                value={values.password}
-                                name="password"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                label="Password"
-                                inputProps={{
-                                    classes: {
-                                        notchedOutline: classes.notchedOutline
-                                    }
-                                }}
-                            />
-                            {touched.password && errors.password && (
-                                <FormHelperText error id="standard-weight-helper-text-password-login">
-                                    {' '}
-                                    {errors.password}{' '}
-                                </FormHelperText>
-                            )}
-                        </FormControl>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={checked}
-                                        onChange={(event) => setChecked(event.target.checked)}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label="Remember me"
-                            />
-                            <Typography
-                                variant="subtitle1"
-                                component={Link}
-                                to={props.login ? '/pages/forgot-password/forgot-password' + props.login : '#'}
-                                onClick={()=>history.push('/login/forgot/email')}
-                                color="secondary"
-                                sx={{ textDecoration: 'none' }}
-                            >
-                                Forgot Password?
-                            </Typography>
-                        </Stack>
                         {errors.submit && (
                             <Box
                                 sx={{
@@ -258,7 +183,7 @@ const RestLogin = (props, { ...others }) => {
                                     variant="contained"
                                     color="secondary"
                                 >
-                                    Sign IN
+                                    Send Verfication Code
                                 </Button>
                             </AnimateButton>
                         </Box>

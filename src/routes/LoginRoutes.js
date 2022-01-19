@@ -10,6 +10,10 @@ import Loadable from '../ui-component/Loadable';
 // login routing
 const AuthLogin = Loadable(lazy(() => import('../views/pages/authentication/login')));
 
+const ForgotPasswordEmailPage = Loadable(lazy(() => import('../views/pages/authentication/forgot-password/emailPage')));
+const ForgotPasswordVerficationPage = Loadable(lazy(() => import('../views/pages/authentication/forgot-password/verificationPage')));
+const ForgotPasswordResetPage = Loadable(lazy(() => import('../views/pages/authentication/forgot-password/passwordResetPage')));
+
 //-----------------------|| AUTH ROUTING ||-----------------------//
 
 const LoginRoutes = () => {
@@ -21,7 +25,10 @@ const LoginRoutes = () => {
                 <Switch location={location} key={location.pathname}>
                     <NavMotion>
                         <GuestGuard>
-                            <Route path="/login" component={AuthLogin} />
+                            <Route exact path="/login" component={AuthLogin} />
+                            <Route exact path="/login/forgot/email" component={ForgotPasswordEmailPage} />
+                            <Route exact path="/login/forgot/verfication" component={ForgotPasswordVerficationPage} />
+                            <Route exact path="/login/forgot/reset" component={ForgotPasswordResetPage} />
                         </GuestGuard>
                     </NavMotion>
                 </Switch>

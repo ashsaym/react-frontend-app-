@@ -13,6 +13,7 @@ const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default'
 const ComUnits = Loadable(lazy(() => import('../views/ComUnits')));
 const MyCCIs = Loadable(lazy(() => import('../views/MyCCIs')));
 const Licences = Loadable(lazy(() => import('../views/Licences')));
+const Details = Loadable(lazy(()=>import('../views/Details')))
 
 //-----------------------|| MAIN ROUTING ||-----------------------//
 
@@ -25,7 +26,8 @@ const MainRoutes = () => {
                 '/dashboard',
                 '/CommunicationUnits',
                 '/MyCCIs',
-                '/Licences'
+                '/Licences',
+                '/details/:SerialNumber'
             ]}
         >
             <MainLayout>
@@ -35,6 +37,7 @@ const MainRoutes = () => {
                         <Route path="/CommunicationUnits" component={ComUnits} />
                         <Route path="/MyCCIs" component={MyCCIs} />
                         <Route path="/Licences" component={Licences} />
+                        <Route path="/details/:SerialNumber" component={Details}/>
                     </AuthGuard>
                 </Switch>
             </MainLayout>

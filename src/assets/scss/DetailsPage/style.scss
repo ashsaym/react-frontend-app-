@@ -1,0 +1,11 @@
+.detailsPage {
+    width: 100%;
+    &-title {
+        display: flex;
+        justify-content: center;
+        font-weight: 300;
+        font-size: 34px;
+        color: #212b36;
+        width: 100%;
+    }
+}
