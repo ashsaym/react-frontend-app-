@@ -25,7 +25,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const NewLicenceAdd = () => {
+const NewLicenceAdd = ({ setLoadNewData }) => {
     const dispatch = useDispatch();
     const autoCompleteData = useSelector((state) => state.autoComplete);
     //  const [autoCompleteData, setAutoCompleteData] = useState([]);
@@ -69,26 +69,19 @@ const NewLicenceAdd = () => {
                 configData.API_SERVER + 'Licences/check/type/' + selectedSerialNo + '&&' + selectedLicenceType
             );
 
-            if (licenceExistence.data.length == 0) {
-                const res = await api.post(configData.API_SERVER + 'Licences/', {
-                    Serial_Number: selectedSerialNo,
-                    license_type: selectedLicenceType,
-                    modified_by: user.email,
-                    expired_on: expireDate,
-                    added_by: user.email
-                });
-                console.log('added');
-            } else {
-                const res = await api.put(configData.API_SERVER + 'Licences/' + licenceExistence.data[0].id + '/', {
-                    Serial_Number: selectedSerialNo,
-                    license_type: selectedLicenceType,
-                    modified_by: user.email,
-                    expired_on: expireDate,
-                    added_by: licenceExistence.data[0].added_by
-                });
-                console.log('updated');
-            }
+            const res = await api.post(configData.API_SERVER + 'Licences/', {
+                Serial_Number: selectedSerialNo,
+                license_type: selectedLicenceType,
+                modified_by: user.email,
+                expired_on: expireDate,
+                added_by: user.email
+            });
+            console.log('added');
+            setLoadNewData((prev) => prev + 'a');
             setSuccessfullyAdded((prev) => ({ ...prev, open: true }));
+            setSelectedLicenceType('');
+
+            setExpireDate(new Date());
         } catch (error) {
             console.log(error);
             setAddedFail(true);
@@ -201,16 +194,17 @@ const NewLicenceAdd = () => {
                 >
                     <Autocomplete
                         open={autoCompleteShow}
+                        key="10"
                         filterSelectedOptions
                         sx={{ width: 300 }}
                         options={autoCompleteData}
-                        inputValue={inputValue}
-                        onInputChange={(event, value) => {
+                        // inputValue={inputValue}
+                        onInputChange={(event, value, reason) => {
                             setInputValue(value);
 
                             if (value.length > 1) {
-                                setAutoCompleteShow(true);
                             }
+                            setAutoCompleteShow(true);
                         }}
                         onClose={() => setAutoCompleteShow(false)}
                         autoHighlight

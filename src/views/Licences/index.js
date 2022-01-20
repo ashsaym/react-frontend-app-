@@ -12,6 +12,7 @@ import NewLicenceAdd from './NewLicenceAdd'
 
 const Licences = () => {
     const [isLoading, setLoading] = useState(true);
+    const [loadNewData,setLoadNewData] = useState('')
     useEffect(() => {
         setLoading(false);
     }, []);
@@ -21,10 +22,10 @@ const Licences = () => {
                 <Grid item xs={12}>
                     <Grid container spacing={gridSpacing}>
                         <Grid item lg={12} md={12} sm={12} xs={12}>
-                            <NewLicenceAdd/>
+                            <NewLicenceAdd setLoadNewData={setLoadNewData}/>
                         </Grid>
                         <Grid item lg={12} md={12} sm={2} xs={12}>
-                            <DataGridAPI />
+                            <DataGridAPI loadNewData={loadNewData}/>
                         </Grid>
                     </Grid>
                 </Grid>

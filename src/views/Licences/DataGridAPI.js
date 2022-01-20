@@ -32,7 +32,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function DataGridAPI() {
+export default function DataGridAPI({loadNewData}) {
     const history = useHistory();
     const [tableData, setTableData] = useState([]);
     const [showDialog, setShowDialog] = useState(false);
@@ -64,7 +64,7 @@ export default function DataGridAPI() {
     }, []);
     useEffect(() => {
         api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data));
-    }, [submitted]);
+    }, [submitted,loadNewData]);
     const saveLicenceData = async () => {
         const user = store.getState().account;
         setSubmitted((prev) => prev + 'a');

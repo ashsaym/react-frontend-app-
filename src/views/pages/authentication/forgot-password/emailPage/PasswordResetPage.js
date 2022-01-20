@@ -87,6 +87,8 @@ const PasswordResetComp = (props, { ...others }) => {
     const [confirmationPassword, setConfirmationPassword] = React.useState('');
     const [showPasswordConfirm, setShowPasswordConfirm] = React.useState(false);
     const [showPasswordError, setShowPasswordError] = React.useState(false);
+    const [showPasswordSubmitError, setShowPasswordSubmitError] = React.useState(false);
+    const [errorData,setErrorData] = React.useState('')
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -103,20 +105,39 @@ const PasswordResetComp = (props, { ...others }) => {
     const handleSubmit = () => {
         if (password != confirmationPassword) {
             setShowPasswordError(true);
+            setShowPasswordSubmitError(false)
         }
-        if(password===confirmationPassword){
-            
+        if (password === confirmationPassword) {
+            console.log({
+                password: password,
+                token: props.verificationNo
+            });
+            axios
+                .post(configData.API_SERVER + 'password/reset/confirm/', {
+                    password: password,
+                    token: props.verificationNo
+                })
+                .then((res) => {
+                    history.push('/login')
+                })
+                .catch((err) => {
+                    setShowPasswordSubmitError(true)
+                    setShowPasswordError(false)
+                    console.log(err.response);
+                    if(err.response.data.password){
+                        setErrorData(err.response.data.password[0])
+                    }else{
 
-            // axios.post(configData.API_SERVER+'password/reset/confirm/',{
-            //     password: password,
-            //     token: props.verificationNo
-            // })
+                        setErrorData(err.response.data)
+                    }
+                });
         }
     };
 
     return (
         <React.Fragment>
             {showPasswordError && <Typography color="error">Passwords didn't match</Typography>}
+            {showPasswordSubmitError && <Typography color="error">{errorData}</Typography>}
             <Formik
                 initialValues={{
                     passwordConfirm: '',
