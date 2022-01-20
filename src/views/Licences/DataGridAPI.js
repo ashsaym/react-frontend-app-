@@ -25,6 +25,12 @@ import Select from '@mui/material/Select';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function DataGridAPI() {
     const history = useHistory();
@@ -33,9 +39,17 @@ export default function DataGridAPI() {
     const [selectedLicence, setSelectedLicence] = useState({ comments: '' });
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const [licenceTypes, setLicenceTypes] = useState([]);
-    const [submitted,setSubmitted] = useState('')
+    const [submitted, setSubmitted] = useState('');
     const [adminUser, setAdminUser] = useState(false);
     const account = useSelector((state) => state.account);
+    const [successfullyAdded, setSuccessfullyAdded] = useState({
+        open: false,
+        vertical: 'bottom',
+        horizontal: 'right'
+    });
+    const { vertical, horizontal } = successfullyAdded;
+
+    const [addedFail, setAddedFail] = useState(false);
 
     useEffect(() => {
         api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data));
@@ -48,12 +62,12 @@ export default function DataGridAPI() {
         });
         fetchLicenceTypes();
     }, []);
-    useEffect(()=>{
+    useEffect(() => {
         api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data));
-    },[submitted])
+    }, [submitted]);
     const saveLicenceData = async () => {
         const user = store.getState().account;
-        setSubmitted(prev=>prev+'a')
+        setSubmitted((prev) => prev + 'a');
 
         try {
             const res = await api.put(configData.API_SERVER + 'Licences/' + selectedLicence.id + '/', {
@@ -66,8 +80,10 @@ export default function DataGridAPI() {
                 modified_by: user.email
             });
             console.log('updated');
+            setSuccessfullyAdded((prev) => ({ ...prev, open: true }));
         } catch (err) {
             console.log(err);
+            setAddedFail(true);
         }
         setShowDialog(false);
     };
@@ -81,6 +97,7 @@ export default function DataGridAPI() {
             });
     };
     const deleteHandler = async () => {
+        setSubmitted((prev) => prev + 'a');
         try {
             const res = await api.delete(configData.API_SERVER + 'Licences/' + selectedLicence.id + '/');
             console.log('successfully deleted');
@@ -178,6 +195,58 @@ export default function DataGridAPI() {
 
     return (
         <div style={{ height: 1200, width: 'auto' }}>
+            <Snackbar
+             anchorOrigin={{ vertical, horizontal }}
+                open={successfullyAdded.open}
+                autoHideDuration={6000}
+                onClose={(event, reason) => {
+                    if (reason === 'clickaway') {
+                        return;
+                    }
+
+                    setSuccessfullyAdded((prev) => ({ ...prev, open: false }));
+                }}
+            >
+                <Alert
+                    onClose={(event, reason) => {
+                        if (reason === 'clickaway') {
+                            return;
+                        }
+
+                        setSuccessfullyAdded((prev) => ({ ...prev, open: false }));
+                    }}
+                    severity="success"
+                    sx={{ width: '100%' }}
+                >
+                    Successfully Added!
+                </Alert>
+            </Snackbar>
+            <Snackbar
+             anchorOrigin={{ vertical, horizontal }}
+                open={addedFail}
+                autoHideDuration={6000}
+                onClose={(event, reason) => {
+                    if (reason === 'clickaway') {
+                        return;
+                    }
+
+                    setAddedFail(false);
+                }}
+            >
+                <Alert
+                    onClose={(event, reason) => {
+                        if (reason === 'clickaway') {
+                            return;
+                        }
+
+                        setAddedFail(false);
+                    }}
+                    severity="error"
+                    sx={{ width: '100%' }}
+                >
+                    Submission Failed!
+                </Alert>
+            </Snackbar>
             <Dialog
                 open={showDialog}
                 onClose={() => {
@@ -255,7 +324,6 @@ export default function DataGridAPI() {
                         label="Comments"
                         value={selectedLicence.comments}
                         onChange={(e) => {
-                         
                             setSelectedLicence((prevData) => {
                                 return { ...prevData, comments: e.target.value };
                             });

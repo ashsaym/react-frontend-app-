@@ -157,7 +157,7 @@ const SearchSection = () => {
                 onInputChange={(event, value) => {
                     //   console.log(value);
                     setInputValue(value);
-                    if (value.length > 2) {
+                    if (value.length > 1) {
                         setAutoCompleteShow(true);
                     }
                 }}

@@ -27,7 +27,6 @@ const onResponse = (response) => {
 };
 
 const onResponseError = async (error) => {
-  
     if (error.response) {
         // Access Token was expired
         if (error.response.status === 401 && error.response.data.messages[0].message === 'Token is invalid or expired') {
@@ -36,7 +35,7 @@ const onResponseError = async (error) => {
             const refresh_token = state.account.refresh_token;
 
             try {
-                const rs = await axios.post(`${API_URL}/Token/renew`, {
+                const rs = await axios.post(`${API_URL}Token/renew`, {
                     refresh_token: refresh_token
                 });
 

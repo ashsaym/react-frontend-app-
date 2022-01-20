@@ -18,6 +18,12 @@ import Select from '@mui/material/Select';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const NewLicenceAdd = () => {
     const dispatch = useDispatch();
@@ -35,6 +41,15 @@ const NewLicenceAdd = () => {
     const [expireDate, setExpireDate] = useState();
     const [buttonLoading, setButtonLoading] = useState(false);
     const [adminButtonLoading, setAdminButtonLoading] = useState(false);
+
+    const [successfullyAdded, setSuccessfullyAdded] = useState({
+        open: false,
+        vertical: 'bottom',
+        horizontal: 'right'
+    });
+    const { vertical, horizontal } = successfullyAdded;
+
+    const [addedFail, setAddedFail] = useState(false);
     const fetchLicenceTypes = () => {
         api.get(configData.API_SERVER + 'LicenceTypes/')
             .then((response) => {
@@ -48,7 +63,7 @@ const NewLicenceAdd = () => {
         const user = store.getState().account;
 
         setButtonLoading(true);
-      
+
         try {
             const licenceExistence = await api.get(
                 configData.API_SERVER + 'Licences/check/type/' + selectedSerialNo + '&&' + selectedLicenceType
@@ -73,8 +88,10 @@ const NewLicenceAdd = () => {
                 });
                 console.log('updated');
             }
+            setSuccessfullyAdded((prev) => ({ ...prev, open: true }));
         } catch (error) {
             console.log(error);
+            setAddedFail(true);
         }
 
         setButtonLoading(false);
@@ -119,6 +136,58 @@ const NewLicenceAdd = () => {
     }, []);
     return (
         <React.Fragment>
+            <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={successfullyAdded.open}
+                autoHideDuration={6000}
+                onClose={(event, reason) => {
+                    if (reason === 'clickaway') {
+                        return;
+                    }
+
+                    setSuccessfullyAdded((prev) => ({ ...prev, open: false }));
+                }}
+            >
+                <Alert
+                    onClose={(event, reason) => {
+                        if (reason === 'clickaway') {
+                            return;
+                        }
+
+                        setSuccessfullyAdded((prev) => ({ ...prev, open: false }));
+                    }}
+                    severity="success"
+                    sx={{ width: '100%' }}
+                >
+                    Successfully Added!
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={addedFail}
+                autoHideDuration={6000}
+                anchorOrigin={{ vertical, horizontal }}
+                onClose={(event, reason) => {
+                    if (reason === 'clickaway') {
+                        return;
+                    }
+
+                    setAddedFail(false);
+                }}
+            >
+                <Alert
+                    onClose={(event, reason) => {
+                        if (reason === 'clickaway') {
+                            return;
+                        }
+
+                        setAddedFail(false);
+                    }}
+                    severity="error"
+                    sx={{ width: '100%' }}
+                >
+                    Submission Failed!
+                </Alert>
+            </Snackbar>
             <MainCard>
                 <Box
                     component="form"
@@ -139,7 +208,7 @@ const NewLicenceAdd = () => {
                         onInputChange={(event, value) => {
                             setInputValue(value);
 
-                            if (value.length > 2) {
+                            if (value.length > 1) {
                                 setAutoCompleteShow(true);
                             }
                         }}

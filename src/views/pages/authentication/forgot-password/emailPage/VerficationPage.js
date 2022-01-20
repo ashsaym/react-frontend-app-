@@ -21,27 +21,29 @@ import AnimateButton from '../../../../../ui-component/extended/AnimateButton';
 
 //================================|| LOGIN MAIN ||================================//
 
-const ForgotPasswordVerficationPage = () => {
+const ForgotPasswordVerficationPage = ({ setVerificationField, setPasswordResetField,verificationNo, setVerificationNo }) => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [verificationNo, setVerificationNo] = useState('');
+
     const [validVerfication, setValidVerification] = useState(true);
-  
+
     const checkVerification = async () => {
-        setIsSubmitting(true)
+        setIsSubmitting(true);
+        console.log(verificationNo)
         axios
             .post(configData.API_SERVER + 'password/reset/validate_token/', {
                 token: verificationNo
             })
             .then((res) => {
-                console.log(res)
-                setValidVerification(true)
+                console.log(res);
+                setValidVerification(true);
+                setVerificationField(false);
+                setPasswordResetField(true);
             })
             .catch((error) => {
-            
-                setValidVerification(false)
-                setIsSubmitting(false)
+                setValidVerification(false);
+                setIsSubmitting(false);
             });
     };
 

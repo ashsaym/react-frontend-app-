@@ -112,7 +112,8 @@ const RestLogin = (props, { ...others }) => {
                                 email: values.email
                             })
                             .then(function (response) {
-                                history.push('/login/forgot/verfication')
+                                props.setEmailField(false);
+                                props.setVerificationField(true);
                             })
                             .catch(function (error) {
                                 setValidEmail(false);
@@ -120,8 +121,6 @@ const RestLogin = (props, { ...others }) => {
                                 setErrors({ submit: error.response.data.non_field_errors });
                                 setSubmitting(false);
                             });
-
-                         
                     } catch (err) {
                         if (scriptedRef.current) {
                             setStatus({ success: false });
