@@ -15,7 +15,7 @@ const icons = {
 export const dashboard = {
     id: 'dashboard',
     type: 'group',
-   // title:'Dashboard',
+    // title:'Dashboard',
     children: [
         {
             id: 'default',
@@ -24,6 +24,14 @@ export const dashboard = {
             url: '/dashboard',
             icon: icons['IconDashboard'],
             breadcrumbs: false
+        },
+        {
+            id: 'Licences',
+            title: 'Licence Details',
+            type: 'item',
+            url: '/Licences',
+            icon: icons['IconSitemap'],
+            breadcrumbs: true
         },
         {
             id: 'sample-page',
@@ -39,14 +47,6 @@ export const dashboard = {
             type: 'item',
             url: '/MyCCIs',
             icon: icons['IconDeviceAnalytics'],
-            breadcrumbs: true
-        },
-        {
-            id: 'Licences',
-            title: 'Licence Details',
-            type: 'item',
-            url: '/Licences',
-            icon: icons['IconSitemap'],
             breadcrumbs: true
         }
     ]

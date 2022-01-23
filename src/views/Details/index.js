@@ -17,11 +17,7 @@ const Details = () => {
     useEffect(() => {
         setLoading(false);
     }, []);
-    return (
-        <MainCard>
-            <ItemDetails />
-        </MainCard>
-    );
+    return <ItemDetails />;
 };
 
 export default Details;

@@ -8,4 +8,21 @@
         color: #212b36;
         width: 100%;
     }
+    &-history {
+        &-subdata {
+            display: flex;
+            align-items: center;
+            &-title {
+                color: #212b36;
+                margin-left: 10px;
+            }
+        }
+    }
+    &-data {
+        &-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    }
 }

@@ -7,57 +7,77 @@ import { Box } from '@mui/material';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 
-import env from 'react-dotenv';
+import MyCCIDetail from './MyCCIDetiail';
+import LicenceDetail from './LicenceDetails';
+import MCCIAPIData from './MyCCIAPIData';
+import HistoryItemDetail from './HistoryItemDetail';
+import api from '../../utils/api';
+import configData from '../../config';
+
 import '../../assets/scss/DetailsPage/style.scss';
 
-
-
 export default function ItemDetails() {
-  
     const { SerialNumber } = useParams();
-    useEffect(() => {
-        console.log(process.env);
+    const [pageData, setPageData] = useState({
+        Licenses: [],
+        MyCCIs: [],
+        Communication: [],
+        MyCCIsAPI: { simcardStatistics: [], simcardStatisticsToday: [] }
     });
+    useEffect(() => {
+        api.get(configData.API_SERVER + '/Details/' + SerialNumber)
+            .then((res) => {
+                setPageData(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
     return (
         <div className="detailsPage">
-            <div className="detailsPage-title">Details Page</div>
             <div className="detailsPage-data">
-                <Card sx={{ maxWidth: 500 }}>
-                    <CardContent>
-                        <Typography sx={{ marginBottom: 4 }} gutterBottom variant="h2" component="div" color="#212b36" >
-                            Licence Details
-                        </Typography>
-                    </CardContent>
-                </Card>
-                <Card sx={{ maxWidth: 500 }}>
-                    <CardContent>
-                        <Typography sx={{ marginBottom: 4 }} gutterBottom variant="h2" component="div" color="#212b36">
-                            History
-                        </Typography>
-                        <Box>
-                            <Typography gutterBottom variant="h4" component="div" color="#212b36">
-                                Created On
+                <div className="detailsPage-data-row">
+                    <Card sx={{ minWidth: 670 }}>
+                        <CardContent>
+                            <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
+                                My CCI Details
                             </Typography>
-                            <Typography variant="body2" color="#637381">
-                                12 Feb 2021
+                            <MyCCIDetail data={pageData.MyCCIs} />
+                        </CardContent>
+                    </Card>
+                    
+                    <Card sx={{ minWidth: 510 }}>
+                        <CardContent>
+                            <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
+                                Licence Details
                             </Typography>
-                            <Typography variant="body2" color="#637381">
-                                something@something.com
+                            <LicenceDetail data={pageData.Licenses} />
+                        </CardContent>
+                    </Card>
+                </div>
+                <div className="detailsPage-data-row">
+                    <Card sx={{ minWidth: 670 }}>
+                        <CardContent>
+                            <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
+                                My CCI API Data
                             </Typography>
-                        </Box>
-                        <Box sx={{ marginTop: 3 }}>
-                            <Typography gutterBottom variant="h4" component="div" color="#212b36">
-                                Updated on
-                            </Typography>
-                            <Typography variant="body2" color="#637381">
-                                12 Feb 2021
-                            </Typography>
-                            <Typography variant="body2" color="#637381">
-                                something@something.com
-                            </Typography>
-                        </Box>
-                    </CardContent>
-                </Card>
+                            <MCCIAPIData data={pageData.MyCCIsAPI} />
+                        </CardContent>
+                    </Card>
+                    <div>
+                        <Card sx={{ minWidth: 510 }}>
+                            <CardContent>
+                                <Typography sx={{ marginBottom: 1 }} gutterBottom variant="h2" component="div" color="#5e35b1">
+                                    History
+                                </Typography>
+                                <HistoryItemDetail data={pageData.Licenses} dataType="Licenses" />
+                                <HistoryItemDetail data={pageData.MyCCIs} dataType="My CCIs" />
+                                <HistoryItemDetail data={pageData.Communication} dataType="Communication" />
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -53,7 +53,7 @@ const TableData = () => {
                             {loading && ComUnits.map((rows)=>(
                             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row">
-                                    <Link to={'CommunicationUnitDetails/'+rows.SerialNumber} style={{ textDecoration: 'none',color:'blue' }}>
+                                    <Link to={'details/'+rows.SerialNumber} style={{ textDecoration: 'none',color:'blue' }}>
                                         <b>{rows.SerialNumber}</b>
                                     </Link>
                                 </TableCell>

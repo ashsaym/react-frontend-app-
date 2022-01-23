@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import api from '../../utils/api';
 
@@ -13,9 +14,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Link } from '@mui/material';
+import Link from 'react-router-dom/es/Link';
 
 const TableData = () => {
+    const history = useHistory();
     useEffect(() => {
         getComUnits();
     }, []);
@@ -27,7 +29,7 @@ const TableData = () => {
     const getComUnits = async () => {
         try {
             const res = await api.get(configData.API_SERVER + 'MyCCIs/'); //{ headers: { Authorization: 'Token ' + account.access_token } });
-      
+
             setComUnits(res.data);
             setLoading(true);
         } catch (e) {
@@ -57,7 +59,7 @@ const TableData = () => {
                             ComUnits.map((rows) => (
                                 <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component="th" scope="row">
-                                        <Link to={'MyCCIDetails/' + rows.SerialNumber} style={{ textDecoration: 'none', color: 'blue' }}>
+                                        <Link to={'details/' + rows.SerialNumber} style={{ textDecoration: 'none', color: 'blue' }}>
                                             <b>{rows.SerialNumber}</b>
                                         </Link>
                                     </TableCell>
