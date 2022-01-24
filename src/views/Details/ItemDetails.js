@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 
@@ -15,6 +15,8 @@ import api from '../../utils/api';
 import configData from '../../config';
 
 import '../../assets/scss/DetailsPage/style.scss';
+import { gridSpacing } from '../../store/constant';
+import MainCard from '../../ui-component/cards/MainCard';
 
 export default function ItemDetails() {
     const { SerialNumber } = useParams();
@@ -35,50 +37,53 @@ export default function ItemDetails() {
     }, []);
 
     return (
-        <div className="detailsPage">
-            <div className="detailsPage-data">
-                <div className="detailsPage-data-row">
-                    <Card sx={{ minWidth: 670 }}>
-                        <CardContent>
-                            <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
-                                My CCI Details
-                            </Typography>
-                            <MyCCIDetail data={pageData.MyCCIs} />
-                        </CardContent>
-                    </Card>
-                    
-                    <Card sx={{ minWidth: 510 }}>
-                        <CardContent>
-                            <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
-                                Licence Details
-                            </Typography>
-                            <LicenceDetail data={pageData.Licenses} />
-                        </CardContent>
-                    </Card>
-                </div>
-                <div className="detailsPage-data-row">
-                    <Card sx={{ minWidth: 670 }}>
-                        <CardContent>
-                            <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
-                                My CCI API Data
-                            </Typography>
-                            <MCCIAPIData data={pageData.MyCCIsAPI} />
-                        </CardContent>
-                    </Card>
-                    <div>
-                        <Card sx={{ minWidth: 510 }}>
-                            <CardContent>
+        <MainCard>
+            <Grid container spacing={gridSpacing}>
+                <Grid item xs={12}>
+                    <Grid container spacing={gridSpacing}>
+                        <Grid item lg={3} md={3} sm={6} xs={12}>
+                            <CardContent sx={{ marginBottom: 2 }}>
+                                <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
+                                    My CCI Details
+                                </Typography>
+                                <MyCCIDetail data={pageData.MyCCIs} />
+                            </CardContent>
+                        </Grid>
+                        <Grid item sm={6} xs={12} md={3} lg={3}>
+                            <CardContent sx={{ marginBottom: 2 }}>
+                                <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
+                                    Licence Details
+                                </Typography>
+                                <LicenceDetail data={pageData.Licenses} />
+                            </CardContent>
+                        </Grid>
+                        <Grid item sm={6} xs={12} md={6} lg={6}>
+                            <CardContent sx={{ marginBottom: 2 }}>
                                 <Typography sx={{ marginBottom: 1 }} gutterBottom variant="h2" component="div" color="#5e35b1">
                                     History
                                 </Typography>
-                                <HistoryItemDetail data={pageData.Licenses} dataType="Licenses" />
-                                <HistoryItemDetail data={pageData.MyCCIs} dataType="My CCIs" />
-                                <HistoryItemDetail data={pageData.Communication} dataType="Communication" />
+                                <Grid container spacing={gridSpacing}>
+                                    <Grid item lg={6} md={6} sm={6} xs={12}>
+                                        <HistoryItemDetail data={pageData.Licenses} dataType="Licenses" />
+                                    </Grid>
+                                    <Grid item lg={6} md={6} sm={6} xs={12}>
+                                        <HistoryItemDetail data={pageData.MyCCIs} dataType="MyCCIs" />
+                                        <HistoryItemDetail data={pageData.Communication} dataType="Communication Units" />
+                                    </Grid>
+                                </Grid>
                             </CardContent>
-                        </Card>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        </Grid>
+                        <Grid item sm={6} xs={12} md={12} lg={12}>
+                            <CardContent sx={{ marginBottom: 2 }}>
+                                <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
+                                    MyCCI API Data
+                                </Typography>
+                                <MCCIAPIData data={pageData.MyCCIsAPI} />
+                            </CardContent>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </MainCard>
     );
 }

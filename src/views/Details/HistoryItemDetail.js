@@ -1,12 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { makeStyles } from '@mui/styles';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import React from 'react';
 import { Box } from '@mui/material';
-import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import DescriptionIcon from '@mui/icons-material/Description';
 import '../../assets/scss/DetailsPage/style.scss';
 
