@@ -30,9 +30,12 @@ const onResponse = (response) => {
 const onResponseError = async (error) => {
     if (error.response) {
         // Access Token was expired
-        dispatch({
-            type:LOGOUT
-        })
+        if(error.response.code==="token_not_valid"){
+
+            dispatch({
+                type:LOGOUT
+            })
+        }
 
         if (error.response.status === 401 && error.response.data.messages[0].message === 'Token is invalid or expired') {
             const state = store.getState();

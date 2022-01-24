@@ -14,6 +14,7 @@ const ComUnits = Loadable(lazy(() => import('../views/ComUnits')));
 const MyCCIs = Loadable(lazy(() => import('../views/MyCCIs')));
 const Licences = Loadable(lazy(() => import('../views/Licences')));
 const Details = Loadable(lazy(()=>import('../views/Details')))
+const Users = Loadable(lazy(()=>import('../views/Users')))
 
 //-----------------------|| MAIN ROUTING ||-----------------------//
 
@@ -27,7 +28,8 @@ const MainRoutes = () => {
                 '/CommunicationUnits',
                 '/MyCCIs',
                 '/Licences',
-                '/details/:SerialNumber'
+                '/details/:SerialNumber',
+                '/users'
             ]}
         >
             <MainLayout>
@@ -38,6 +40,7 @@ const MainRoutes = () => {
                         <Route path="/MyCCIs" component={MyCCIs} />
                         <Route path="/Licences" component={Licences} />
                         <Route path="/details/:SerialNumber" component={Details}/>
+                        <Route path="/users" component={Users} />
                     </AuthGuard>
                 </Switch>
             </MainLayout>

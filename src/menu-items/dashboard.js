@@ -1,5 +1,5 @@
 // assets
-import { IconBrandChrome, IconDashboard, IconDeviceAnalytics, IconHelp, IconSitemap } from '@tabler/icons';
+import { IconBrandChrome, IconDashboard, IconDeviceAnalytics, IconHelp, IconSitemap, IconUsers } from '@tabler/icons';
 
 // constant
 const icons = {
@@ -7,7 +7,8 @@ const icons = {
     IconDeviceAnalytics,
     IconBrandChrome: IconBrandChrome,
     IconHelp: IconHelp,
-    IconSitemap: IconSitemap
+    IconSitemap: IconSitemap,
+    IconUsers: IconUsers
 };
 
 //-----------------------|| DASHBOARD MENU ITEMS ||-----------------------//
@@ -47,6 +48,14 @@ export const dashboard = {
             type: 'item',
             url: '/MyCCIs',
             icon: icons['IconDeviceAnalytics'],
+            breadcrumbs: true
+        },
+        {
+            id: 'UserData',
+            title: 'Users',
+            type: 'item',
+            url: '/users',
+            icon: icons['IconUsers'],
             breadcrumbs: true
         }
     ]

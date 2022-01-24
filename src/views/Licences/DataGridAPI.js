@@ -32,9 +32,10 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function DataGridAPI({loadNewData}) {
+export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, selectedSerialNo }) {
     const history = useHistory();
     const [tableData, setTableData] = useState([]);
+    const [tableDataCache, setTableDataCache] = useState([]);
     const [showDialog, setShowDialog] = useState(false);
     const [selectedLicence, setSelectedLicence] = useState({ comments: '' });
     const [showAlertDialog, setShowAlertDialog] = useState(false);
@@ -51,8 +52,24 @@ export default function DataGridAPI({loadNewData}) {
 
     const [addedFail, setAddedFail] = useState(false);
 
+    //choosing Table data
     useEffect(() => {
-        api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data));
+        if (selectedSerialNo) {
+            if (selectedSerialNo.SerialNumber.length > 0) {
+                setTableData(tableDataWithAutocomplete) 
+            }else{
+                setTableData(tableDataCache)
+            }
+        }else{
+            setTableData(tableDataCache)
+        }
+   
+    }, [tableDataWithAutocomplete,selectedSerialNo]);
+
+    useEffect(() => {
+        api.get(configData.API_SERVER + 'Licences/').then((response) => {
+            setTableDataCache(response.data);
+        });
         const user = store.getState().account;
         api.get(configData.API_SERVER + 'Users/check/' + user.email).then((response) => {
             if (response.data[0].is_superuser) {
@@ -64,10 +81,9 @@ export default function DataGridAPI({loadNewData}) {
     }, []);
     useEffect(() => {
         api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data));
-    }, [submitted,loadNewData]);
+    }, [submitted, loadNewData]);
     const saveLicenceData = async () => {
         const user = store.getState().account;
-        setSubmitted((prev) => prev + 'a');
 
         try {
             const res = await api.put(configData.API_SERVER + 'Licences/' + selectedLicence.id + '/', {
@@ -79,7 +95,9 @@ export default function DataGridAPI({loadNewData}) {
                 added_by: selectedLicence.added_by,
                 modified_by: user.email
             });
+            console.log(res);
             console.log('updated');
+            setSubmitted((prev) => prev + 'a');
             setSuccessfullyAdded((prev) => ({ ...prev, open: true }));
         } catch (err) {
             console.log(err);
@@ -113,6 +131,7 @@ export default function DataGridAPI({loadNewData}) {
             headerName: 'Edit',
             sortable: false,
             width: 100,
+            headerAlign: 'center',
             align: 'center',
             renderCell: (params) => {
                 return (
@@ -196,7 +215,7 @@ export default function DataGridAPI({loadNewData}) {
     return (
         <div style={{ height: 1200, width: 'auto' }}>
             <Snackbar
-             anchorOrigin={{ vertical, horizontal }}
+                anchorOrigin={{ vertical, horizontal }}
                 open={successfullyAdded.open}
                 autoHideDuration={6000}
                 onClose={(event, reason) => {
@@ -222,7 +241,7 @@ export default function DataGridAPI({loadNewData}) {
                 </Alert>
             </Snackbar>
             <Snackbar
-             anchorOrigin={{ vertical, horizontal }}
+                anchorOrigin={{ vertical, horizontal }}
                 open={addedFail}
                 autoHideDuration={6000}
                 onClose={(event, reason) => {
@@ -379,7 +398,12 @@ export default function DataGridAPI({loadNewData}) {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <DataGrid rows={tableData} columns={columns} pageSize={20} rowsPerPageOptions={[20]} />
+            <DataGrid
+                rows={tableData}
+                columns={columns}
+                pageSize={20}
+                rowsPerPageOptions={[20]}
+            />
         </div>
     );
 }
