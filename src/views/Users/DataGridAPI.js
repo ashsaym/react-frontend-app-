@@ -13,37 +13,44 @@ import { store } from '../../store';
 import { Button, Box } from '@mui/material';
 import { TextField } from '@mui/material';
 
-export default function DataGridAPI() {
+export default function DataGridAPI({ loadNewData }) {
     const [users, setUsers] = useState([]);
+    
     const getUsersData = async () => {
         api.get(configData.API_SERVER + 'Users/')
             .then((res) => {
                 setUsers(res.data);
+         
             })
             .catch((err) => {
                 console.error(err);
             });
     };
+
     useEffect(() => {
         getUsersData();
     }, []);
 
+    useEffect(() => {
+        getUsersData();
+    }, [loadNewData]);
+
     const columns = [
-        {
-            field: 'Edit',
-            headerName: 'Edit',
-            sortable: false,
-            width: 100,
-            headerAlign: 'center',
-            align: 'center',
-            renderCell: (params) => {
-                return (
-                    <IconButton color="primary" onClick={() => {}}>
-                        <EditIcon />
-                    </IconButton>
-                );
-            }
-        },
+        // {
+        //     field: 'Edit',
+        //     headerName: 'Edit',
+        //     sortable: false,
+        //     width: 100,
+        //     headerAlign: 'center',
+        //     align: 'center',
+        //     renderCell: (params) => {
+        //         return (
+        //             <IconButton color="primary" onClick={() => {}}>
+        //                 <EditIcon />
+        //             </IconButton>
+        //         );
+        //     }
+        // },
 
         {
             field: 'email',
@@ -66,7 +73,6 @@ export default function DataGridAPI() {
             align: 'center',
             headerAlign: 'center',
             width: 100
-        
         },
         {
             field: 'is_seller',

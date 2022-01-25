@@ -4,7 +4,7 @@ import configData from '../../config';
 import api from '../../utils/api';
 import { store } from '../../store';
 import { settingLabels } from '../../store/actions';
-
+import DeleteIcon from '@mui/icons-material/Delete';
 import MainCard from './../../ui-component/cards/MainCard';
 import Autocomplete from '@mui/material/Autocomplete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -137,9 +137,13 @@ const NewLicenceAdd = ({
         })
             .then((res) => {
                 console.log('added new Licence');
+                setShowAddLicenceDialog(false);
+                setNewLicence('');
+                setSuccessfullyAdded((prev) => ({ ...prev, open: true }));
             })
             .catch((err) => {
                 console.error(err);
+                setAddedFail(true);
             });
         setAdminButtonLoading(false);
     };
@@ -207,14 +211,13 @@ const NewLicenceAdd = ({
     };
     useEffect(() => {
         fetchTableDataWithSelectedAutoCompleteValue();
-       
+
         fetchInteractiveLicenceType();
-     
     }, [selectedSerialNo]);
 
     useEffect(() => {
         fetchLicenceTypes();
-    }, [successfullyAdded]);
+    }, [successfullyAdded, blankState]);
 
     useEffect(() => {
         setIsPrevLicenceEdited(true);
@@ -231,6 +234,15 @@ const NewLicenceAdd = ({
         }
     }, [interactiveLicenceTypes]);
 
+    const deleteLicenceTypes = (licenceType) => {
+        api.delete(configData.API_SERVER + 'LicenceTypes/' + licenceType + '/')
+            .then((res) => {
+                setBlankState((prevData) => prevData + ' ');
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
     return (
         <React.Fragment>
             <Snackbar
@@ -319,17 +331,15 @@ const NewLicenceAdd = ({
                                         disabled={!editLicence[index]}
                                     />
                                     <IconButton
-                                        color="primary"
+                                        color="error"
                                         sx={{ marginLeft: 1 }}
                                         onClick={() => {
-                                            var temp = editLicence;
-                                            temp[index] = !editLicence[index];
-                                            setEditLicence(temp);
+                                            deleteLicenceTypes(licenceTypeEdited[index]);
 
                                             setBlankState((prevData) => prevData + ' ');
                                         }}
                                     >
-                                        <EditIcon />
+                                        <DeleteIcon />
                                     </IconButton>
                                     {blankState}
                                 </Box>
@@ -350,7 +360,7 @@ const NewLicenceAdd = ({
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button>ADD</Button>
+                    <Button onClick={addNewLicenceType}>ADD</Button>
                 </DialogActions>
             </Dialog>
             <MainCard>
@@ -365,7 +375,7 @@ const NewLicenceAdd = ({
                 >
                     <Autocomplete
                         // open={autoCompleteShow}
-                        
+
                         freeSolo
                         sx={{ width: 300 }}
                         options={autoCompleteData}

@@ -13,6 +13,9 @@ import NewUserForm from './NewUserForm';
 
 
 const Licences = () => {
+
+    const [loadNewData,setLoadNewData]= useState("a");
+
     
   
     return (
@@ -21,10 +24,10 @@ const Licences = () => {
                 <Grid item xs={12}>
                     <Grid container spacing={gridSpacing}>
                         <Grid item lg={12} md={12} sm={12} xs={12}>
-                            <NewUserForm/>
+                            <NewUserForm setLoadNewData={setLoadNewData}/>
                         </Grid>
-                        <Grid item lg={12} md={12} sm={2} xs={12}>
-                          <DataGridAPI/>
+                        <Grid item lg={12} md={12} sm={2} xs={12} >
+                          <DataGridAPI loadNewData={loadNewData}/>
                         </Grid>
                     </Grid>
                 </Grid>
