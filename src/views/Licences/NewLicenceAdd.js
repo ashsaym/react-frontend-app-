@@ -112,11 +112,9 @@ const NewLicenceAdd = ({
                 comments: comments
             });
             console.log('added');
-            setLoadNewData((prev) => prev + 'a');
+  
             setSuccessfullyAdded((prev) => ({ ...prev, open: true }));
-            setSelectedSerialNo();
-            setInputValue('');
-            setComments('');
+           
             setSelectedLicenceType('');
 
             setExpireDate(new Date());
@@ -150,7 +148,7 @@ const NewLicenceAdd = ({
     useEffect(() => {
         fetchLicenceTypes();
         const user = store.getState().account;
-        console.log(user)
+        console.log(user);
         api.get(configData.API_SERVER + 'Users/check/' + user.email).then((response) => {
             if (response.data[0].is_superuser) {
                 setAdminUser(true);
@@ -168,7 +166,6 @@ const NewLicenceAdd = ({
         api.get(configData.API_SERVER + 'Licences/check/' + selectedSerialNo.SerialNumber)
             .then((res) => {
                 setTableDataWithAutocomplete(res.data);
-  
             })
             .catch((err) => {
                 console.log(err);
@@ -182,7 +179,7 @@ const NewLicenceAdd = ({
                     var temp = [];
                     var temp2 = [];
                     var flag = false;
-                    
+
                     res.data.forEach((elem) => {
                         if (elem.license_type) {
                             temp.push(elem.license_type);
@@ -200,7 +197,6 @@ const NewLicenceAdd = ({
                         }
                         flag = false;
                     });
-                
 
                     setInteractiveLicenceTypes(temp2);
                 })
@@ -216,6 +212,10 @@ const NewLicenceAdd = ({
 
         fetchInteractiveLicenceType();
     }, [selectedSerialNo]);
+    useEffect(() => {
+        fetchTableDataWithSelectedAutoCompleteValue();
+        fetchInteractiveLicenceType();
+    }, [successfullyAdded]);
 
     useEffect(() => {
         fetchLicenceTypes();

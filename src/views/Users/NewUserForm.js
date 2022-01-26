@@ -171,7 +171,7 @@ export default function NewUserForm({ setLoadNewData }) {
                                         }}
                                     />
                                 }
-                                label="is_superuser"
+                                label="Site Admin"
                             />
                             <FormControlLabel
                                 control={
@@ -182,7 +182,7 @@ export default function NewUserForm({ setLoadNewData }) {
                                         }}
                                     />
                                 }
-                                label="is_stuff"
+                                label="Staff"
                             />
                             <FormControlLabel
                                 control={
@@ -193,7 +193,7 @@ export default function NewUserForm({ setLoadNewData }) {
                                         }}
                                     />
                                 }
-                                label="is_seller"
+                                label="Seller"
                             />
                             <FormControlLabel
                                 control={
@@ -204,7 +204,7 @@ export default function NewUserForm({ setLoadNewData }) {
                                         }}
                                     />
                                 }
-                                label="is_external"
+                                label="External"
                             />
                         </FormGroup>
                     </Box>

@@ -1,0 +1,41 @@
+.detailsPage {
+  width: 100%;
+}
+
+.detailsPage-title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  font-weight: 300;
+  font-size: 34px;
+  color: #212b36;
+  width: 100%;
+}
+
+.detailsPage-history-subdata {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.detailsPage-history-subdata-title {
+  color: #212b36;
+  margin-left: 10px;
+}
+
+.detailsPage-data-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-bottom: 20px;
+}
+/*# sourceMappingURL=style.css.map */

@@ -19,9 +19,7 @@ const icons = {
 var dashboard = {};
 const is_admin = cookieCutter.get('is_admin');
 
-
 if (is_admin) {
-  
     dashboard = {
         id: 'dashboard',
         type: 'group',
@@ -29,14 +27,6 @@ if (is_admin) {
         children: [
             {
                 id: 'default',
-                title: 'Dashboard',
-                type: 'item',
-                url: '/dashboard',
-                icon: icons['IconDashboard'],
-                breadcrumbs: false
-            },
-            {
-                id: 'Licences',
                 title: 'Licence Details',
                 type: 'item',
                 url: '/Licences',
@@ -69,29 +59,21 @@ if (is_admin) {
             }
         ]
     };
-}else{
+} else {
     dashboard = {
         id: 'dashboard',
         type: 'group',
         // title:'Dashboard',
         children: [
+            
             {
                 id: 'default',
-                title: 'Dashboard',
-                type: 'item',
-                url: '/dashboard',
-                icon: icons['IconDashboard'],
-                breadcrumbs: false
-            },
-            {
-                id: 'Licences',
                 title: 'Licence Details',
                 type: 'item',
                 url: '/Licences',
                 icon: icons['IconSitemap'],
                 breadcrumbs: true
-            },
-            
+            }
         ]
     };
 }

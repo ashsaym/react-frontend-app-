@@ -84,7 +84,8 @@ const RestLogin = (props, { ...others }) => {
     const scriptedRef = useScriptRef();
     const [checked, setChecked] = React.useState(true);
     const [loginFailed, setLoginFailed] = React.useState(false);
-    const [formSubmitting,setFormSubmitting] = React.useState(false)
+    const [formSubmitting, setFormSubmitting] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState('');
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -108,7 +109,7 @@ const RestLogin = (props, { ...others }) => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
-                    setFormSubmitting(true)
+                    setFormSubmitting(true);
                     try {
                         api.post(configData.API_SERVER + 'Token/get/', {
                             email: values.email,
@@ -116,7 +117,7 @@ const RestLogin = (props, { ...others }) => {
                         })
                             .then(function (response) {
                                 if (response.data.refresh) {
-                                    setFormSubmitting(false)
+                                    setFormSubmitting(false);
                                     setLoginFailed(false);
                                     dispatcher({
                                         type: ACCOUNT_INITIALIZE,
@@ -133,18 +134,21 @@ const RestLogin = (props, { ...others }) => {
                                     }
                                 } else {
                                     setStatus({ success: false });
-                                    setErrors({ submit: response.data.non_field_errors });
+                                    setErrors({ submit: response });
                                     setSubmitting(false);
                                 }
                             })
-                            .catch(function (error) {
+                            .catch( (error)=> {
+                                console.log(error)
                                 setLoginFailed(true);
-                                setFormSubmitting(false)
+                                setFormSubmitting(false);
+                        
                                 setStatus({ success: false });
-                                setErrors({ submit: error.response.data.non_field_errors });
+                                setErrors({ submit: error.response.non_field_errors });
                                 setSubmitting(false);
                             });
                     } catch (err) {
+                    
                         console.error(err);
                         if (scriptedRef.current) {
                             setStatus({ success: false });
