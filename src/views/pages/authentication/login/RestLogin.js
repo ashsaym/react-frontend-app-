@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link,useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import api from '../../../../utils/api'
+import api from '../../../../utils/api';
 import configData from '../../../../config';
 
 // material-ui
@@ -79,10 +79,12 @@ const useStyles = makeStyles((theme) => ({
 const RestLogin = (props, { ...others }) => {
     const classes = useStyles();
     const dispatcher = useDispatch();
-    const history = useHistory()
+    const history = useHistory();
 
     const scriptedRef = useScriptRef();
     const [checked, setChecked] = React.useState(true);
+    const [loginFailed, setLoginFailed] = React.useState(false);
+    const [formSubmitting,setFormSubmitting] = React.useState(false)
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -106,22 +108,23 @@ const RestLogin = (props, { ...others }) => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
+                    setFormSubmitting(true)
                     try {
-                        api
-                            .post(configData.API_SERVER + 'Token/get/', {
-                                email: values.email,
-                                password: values.password
-                            })
+                        api.post(configData.API_SERVER + 'Token/get/', {
+                            email: values.email,
+                            password: values.password
+                        })
                             .then(function (response) {
                                 if (response.data.refresh) {
-                                    console.log(response.data);
+                                    setFormSubmitting(false)
+                                    setLoginFailed(false);
                                     dispatcher({
                                         type: ACCOUNT_INITIALIZE,
                                         payload: {
                                             isLoggedIn: true,
                                             access_token: response.data.access,
                                             refresh_token: response.data.refresh,
-                                            email:values.email,
+                                            email: values.email
                                         }
                                     });
                                     if (scriptedRef.current) {
@@ -135,6 +138,8 @@ const RestLogin = (props, { ...others }) => {
                                 }
                             })
                             .catch(function (error) {
+                                setLoginFailed(true);
+                                setFormSubmitting(false)
                                 setStatus({ success: false });
                                 setErrors({ submit: error.response.data.non_field_errors });
                                 setSubmitting(false);
@@ -151,6 +156,7 @@ const RestLogin = (props, { ...others }) => {
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
+                        {loginFailed && <Typography color="red">Invalid email/password !</Typography>}
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} className={classes.loginInput}>
                             <InputLabel htmlFor="outlined-adornment-email-login">Email</InputLabel>
                             <OutlinedInput
@@ -210,6 +216,7 @@ const RestLogin = (props, { ...others }) => {
                                 </FormHelperText>
                             )}
                         </FormControl>
+
                         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
                             <FormControlLabel
                                 control={
@@ -226,7 +233,7 @@ const RestLogin = (props, { ...others }) => {
                                 variant="subtitle1"
                                 component={Link}
                                 to={props.login ? '/pages/forgot-password/forgot-password' + props.login : '#'}
-                                onClick={()=>history.push('/login/forgot/email')}
+                                onClick={() => history.push('/login/forgot/email')}
                                 color="secondary"
                                 sx={{ textDecoration: 'none' }}
                             >
@@ -251,14 +258,14 @@ const RestLogin = (props, { ...others }) => {
                             <AnimateButton>
                                 <Button
                                     disableElevation
-                                    disabled={isSubmitting}
+                                    disabled={formSubmitting}
                                     fullWidth
                                     size="large"
                                     type="submit"
                                     variant="contained"
                                     color="secondary"
                                 >
-                                    Sign IN
+                                    Sign In
                                 </Button>
                             </AnimateButton>
                         </Box>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import cookieCutter from 'cookie-cutter';
 import { useParams } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import Card from '@mui/material/Card';
@@ -18,8 +19,11 @@ import '../../assets/scss/DetailsPage/style.scss';
 import { gridSpacing } from '../../store/constant';
 import MainCard from '../../ui-component/cards/MainCard';
 
+const is_admin = cookieCutter.get('is_admin');
+
 export default function ItemDetails() {
     const { SerialNumber } = useParams();
+
     const [pageData, setPageData] = useState({
         Licenses: [],
         MyCCIs: [],
@@ -73,14 +77,16 @@ export default function ItemDetails() {
                                 </Grid>
                             </CardContent>
                         </Grid>
-                        <Grid item sm={6} xs={12} md={12} lg={12}>
-                            <CardContent sx={{ marginBottom: 2 }}>
-                                <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
-                                    MyCCI API Data
-                                </Typography>
-                                <MCCIAPIData data={pageData.MyCCIsAPI} />
-                            </CardContent>
-                        </Grid>
+                        {is_admin && (
+                            <Grid item sm={6} xs={12} md={12} lg={12}>
+                                <CardContent sx={{ marginBottom: 2 }}>
+                                    <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
+                                        MyCCI API Data
+                                    </Typography>
+                                    <MCCIAPIData data={pageData.MyCCIsAPI} />
+                                </CardContent>
+                            </Grid>
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

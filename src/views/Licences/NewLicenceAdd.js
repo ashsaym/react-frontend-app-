@@ -74,8 +74,8 @@ const NewLicenceAdd = ({
     const fetchLicenceTypes = () => {
         api.get(configData.API_SERVER + 'LicenceTypes/')
             .then((response) => {
-                setLicenceTypes(response.data);
-                const ServerData = response.data;
+                setLicenceTypes(response.data.results);
+                const ServerData = response.data.results;
                 setLicenceTypeEdited([]);
                 ServerData.forEach((licence) => {
                     setLicenceTypeEdited((prevData) => [...prevData, licence.LicenceType]);
@@ -150,6 +150,7 @@ const NewLicenceAdd = ({
     useEffect(() => {
         fetchLicenceTypes();
         const user = store.getState().account;
+        console.log(user)
         api.get(configData.API_SERVER + 'Users/check/' + user.email).then((response) => {
             if (response.data[0].is_superuser) {
                 setAdminUser(true);
@@ -167,7 +168,7 @@ const NewLicenceAdd = ({
         api.get(configData.API_SERVER + 'Licences/check/' + selectedSerialNo.SerialNumber)
             .then((res) => {
                 setTableDataWithAutocomplete(res.data);
-                console.log(res);
+  
             })
             .catch((err) => {
                 console.log(err);
@@ -181,7 +182,7 @@ const NewLicenceAdd = ({
                     var temp = [];
                     var temp2 = [];
                     var flag = false;
-
+                    
                     res.data.forEach((elem) => {
                         if (elem.license_type) {
                             temp.push(elem.license_type);
@@ -199,6 +200,7 @@ const NewLicenceAdd = ({
                         }
                         flag = false;
                     });
+                
 
                     setInteractiveLicenceTypes(temp2);
                 })

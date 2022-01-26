@@ -30,7 +30,7 @@ const TableData = () => {
         try {
             const res = await api.get(configData.API_SERVER + 'MyCCIs/'); //{ headers: { Authorization: 'Token ' + account.access_token } });
 
-            setComUnits(res.data);
+            setComUnits(res.data.results);
             setLoading(true);
         } catch (e) {
             alert(e.message);

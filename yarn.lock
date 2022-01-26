@@ -3736,6 +3736,11 @@
   dependencies:
     "safe-buffer" "~5.1.1"
 
+"cookie-cutter@^0.2.0":
+  "integrity" "sha1-WYj1mLaMBgoA7IUkrW5qoZPnIkQ="
+  "resolved" "https://registry.npmjs.org/cookie-cutter/-/cookie-cutter-0.2.0.tgz"
+  "version" "0.2.0"
+
 "cookie-signature@1.0.6":
   "integrity" "sha1-4wOogrNCzD7oylE6eZmXNNqzriw="
   "resolved" "https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.6.tgz"

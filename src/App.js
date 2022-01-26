@@ -15,7 +15,9 @@ import NavigationScroll from './layout/NavigationScroll';
 
 import api from './utils/api';
 import configData from './config';
-import { fetchAutoCompleteData } from './store/actions';
+import { fetchAutoCompleteData, SET_USER_PRIVILEGE } from './store/actions';
+import cookieCutter from 'cookie-cutter';
+import { store } from './store';
 
 //-----------------------|| APP ||-----------------------//
 
@@ -28,6 +30,16 @@ const App = () => {
 
             fetchAutoCompleteData(usuableData, dispatch);
         });
+        const user = store.getState().account;
+        if(user.email){
+
+            api.get(configData.API_SERVER + 'Users/check/' + user.email).then((response) => {
+                if (response.data[0].is_superuser || response.data[0].is_stuff) {
+                    cookieCutter.set('is_admin', true)
+                }
+                
+            });
+        }
     });
 
     return (

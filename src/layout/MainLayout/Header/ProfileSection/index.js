@@ -13,6 +13,7 @@ import ListItemButton from '@material-ui/core/ListItemButton';
 
 // third-party
 import axios from 'axios';
+import cookieCutter from 'cookie-cutter';
 
 // project imports
 import { LOGOUT } from './../../../../store/actions';
@@ -118,6 +119,7 @@ const ProfileSection = () => {
 
                 // Force the LOGOUT
                 //if (response.data.success) {
+                    cookieCutter.set('is_admin', '', { expires: new Date(0) })
                     dispatcher({ type: LOGOUT });
                 //} else {
                 //    console.log('response - ', response.data.msg);

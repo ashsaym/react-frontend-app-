@@ -28,7 +28,7 @@ const TableData = () => {
     const getComUnits = async ()=>{
         try{
             const res = await api.get(configData.API_SERVER + 'CommunicationUnits/')  //,{ headers: { "Authorization": 'Token ' + (account.token) }});
-            setComUnits(res.data);
+            setComUnits(res.data.results);
             setLoading(true);
         }
         catch (e) {

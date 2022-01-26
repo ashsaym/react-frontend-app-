@@ -58,8 +58,14 @@ export default function NewUserForm({ setLoadNewData }) {
                 setLoadNewData((prev) => prev + 'a');
                 setCreateUserFailed(false);
                 setAddUserButtonLoading(false);
-                setEmail("")
-                setPassword("")
+                setEmail('');
+                setPassword('');
+                setUserPrivilege({
+                    is_superuser: false,
+                    is_staff: false,
+                    is_external: false,
+                    is_seller: false
+                });
             })
             .catch((err) => {
                 console.log(err);

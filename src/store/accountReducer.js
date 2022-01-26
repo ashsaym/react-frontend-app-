@@ -1,13 +1,14 @@
 // action - state management
-import { ACCOUNT_INITIALIZE, LOGIN, LOGOUT, UPDATE_ACCESSTOKEN } from './actions';
+import { ACCOUNT_INITIALIZE, LOGIN, LOGOUT, UPDATE_ACCESSTOKEN,SET_USER_PRIVILEGE } from './actions';
 
 export const initialState = {
     access_token: '',
     refresh_token: '',
     isLoggedIn: false,
     isInitialized: false,
-    email:""
-   
+    email: '',
+    is_superuser: false,
+    is_staff: false
 };
 
 //-----------------------|| ACCOUNT REDUCER ||-----------------------//
@@ -15,7 +16,7 @@ export const initialState = {
 const accountReducer = (state = initialState, action) => {
     switch (action.type) {
         case ACCOUNT_INITIALIZE: {
-            const { isLoggedIn, access_token, refresh_token,email } = action.payload;
+            const { isLoggedIn, access_token, refresh_token, email } = action.payload;
             return {
                 ...state,
                 isLoggedIn,
@@ -42,10 +43,16 @@ const accountReducer = (state = initialState, action) => {
             };
         }
         case UPDATE_ACCESSTOKEN: {
-            
             return {
                 ...state,
                 access_token: action.payload
+            };
+        }
+        case SET_USER_PRIVILEGE: {
+            return {
+                ...state,
+                is_staff: action.payload.is_staff,
+                is_superuser: action.payload.is_superuser
             };
         }
         default: {

@@ -19,7 +19,7 @@ export default function DataGridAPI({ loadNewData }) {
     const getUsersData = async () => {
         api.get(configData.API_SERVER + 'Users/')
             .then((res) => {
-                setUsers(res.data);
+                setUsers(res.data.results);
          
             })
             .catch((err) => {

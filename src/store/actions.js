@@ -5,6 +5,8 @@ export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const UPDATE_ACCESSTOKEN = 'UPDATE_ACCESSTOKEN';
 export const ACCOUNT_INITIALIZE = 'ACCOUNT_INITIALIZE';
+export const SET_USER_PRIVILEGE = 'SET_USER_PRIVILEGE';
+
 
 // action - customization reducer
 export const SET_MENU = '@customization/SET_MENU';

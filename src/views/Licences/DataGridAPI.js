@@ -56,19 +56,18 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
     useEffect(() => {
         if (selectedSerialNo) {
             if (selectedSerialNo.SerialNumber.length > 0) {
-                setTableData(tableDataWithAutocomplete) 
-            }else{
-                setTableData(tableDataCache)
+                setTableData(tableDataWithAutocomplete);
+            } else {
+                setTableData(tableDataCache);
             }
-        }else{
-            setTableData(tableDataCache)
+        } else {
+            setTableData(tableDataCache);
         }
-   
-    }, [tableDataWithAutocomplete,selectedSerialNo]);
+    }, [tableDataWithAutocomplete, selectedSerialNo]);
 
     useEffect(() => {
         api.get(configData.API_SERVER + 'Licences/').then((response) => {
-            setTableDataCache(response.data);
+            setTableDataCache(response.data.results);
         });
         const user = store.getState().account;
         api.get(configData.API_SERVER + 'Users/check/' + user.email).then((response) => {
@@ -80,7 +79,7 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
         fetchLicenceTypes();
     }, []);
     useEffect(() => {
-        api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data));
+        api.get(configData.API_SERVER + 'Licences/').then((response) => setTableData(response.data.results));
     }, [submitted, loadNewData]);
     const saveLicenceData = async () => {
         const user = store.getState().account;
@@ -95,7 +94,7 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
                 added_by: selectedLicence.added_by,
                 modified_by: user.email
             });
-            console.log(res);
+      
             console.log('updated');
             setSubmitted((prev) => prev + 'a');
             setSuccessfullyAdded((prev) => ({ ...prev, open: true }));
@@ -108,7 +107,8 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
     const fetchLicenceTypes = () => {
         api.get(configData.API_SERVER + 'LicenceTypes/')
             .then((response) => {
-                setLicenceTypes(response.data);
+             
+                setLicenceTypes(response.data.results);
             })
             .catch((error) => {
                 alert(error.message);
@@ -398,12 +398,7 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
                     </Button>
                 </DialogActions>
             </Dialog>
-            <DataGrid
-                rows={tableData}
-                columns={columns}
-                pageSize={20}
-                rowsPerPageOptions={[20]}
-            />
+            <DataGrid rows={tableData} columns={columns} pageSize={20} rowsPerPageOptions={[20]} />
         </div>
     );
 }
