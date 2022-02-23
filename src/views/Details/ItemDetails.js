@@ -23,6 +23,7 @@ const is_admin = cookieCutter.get('is_admin');
 
 export default function ItemDetails() {
     const { SerialNumber } = useParams();
+    const [dataUpdate,setDataUpdate] = useState('a')
 
     const [pageData, setPageData] = useState({
         Licenses: [],
@@ -39,6 +40,15 @@ export default function ItemDetails() {
                 console.error(err);
             });
     }, []);
+    useEffect(() => {
+        api.get(configData.API_SERVER + '/Details/' + SerialNumber)
+            .then((res) => {
+                setPageData(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [dataUpdate]);
 
     return (
         <MainCard>
@@ -50,7 +60,7 @@ export default function ItemDetails() {
                                 <Typography sx={{ marginBottom: 3 }} gutterBottom variant="h2" component="div" color="#5e35b1">
                                     My CCI Details
                                 </Typography>
-                                <MyCCIDetail data={pageData.MyCCIs} />
+                                <MyCCIDetail data={pageData.MyCCIs} setDataUpdate={setDataUpdate}/>
                             </CardContent>
                         </Grid>
                         <Grid item sm={6} xs={12} md={3} lg={3}>

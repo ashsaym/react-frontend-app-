@@ -94,7 +94,7 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
                 added_by: selectedLicence.added_by,
                 modified_by: user.email
             });
-      
+
             console.log('updated');
             setSubmitted((prev) => prev + 'a');
             setSuccessfullyAdded((prev) => ({ ...prev, open: true }));
@@ -107,7 +107,6 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
     const fetchLicenceTypes = () => {
         api.get(configData.API_SERVER + 'LicenceTypes/')
             .then((response) => {
-             
                 setLicenceTypes(response.data.results);
             })
             .catch((error) => {
@@ -281,44 +280,11 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
                 </DialogTitle>
                 <DialogContent>
                     <Box sx={{ width: 400, marginTop: 2 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Expired</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                label="Licence Type"
-                                value={selectedLicence.expired}
-                                onChange={(e) => {
-                                    setSelectedLicence((prevData) => {
-                                        return { ...prevData, expired: e.target.value };
-                                    });
-                                }}
-                            >
-                                <MenuItem value={true}>True</MenuItem>
-                                <MenuItem value={false}>False</MenuItem>
-                            </Select>
-                        </FormControl>
+                        <TextField label="Expired" value={selectedLicence.expired} disabled={true} fullWidth />
                     </Box>
 
                     <Box sx={{ width: 400, marginTop: 2 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Licence Types</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={selectedLicence.license_type}
-                                label="Licence Type"
-                                onChange={(e) => {
-                                    setSelectedLicence((prevData) => {
-                                        return { ...prevData, license_type: e.target.value };
-                                    });
-                                }}
-                            >
-                                {licenceTypes.map((elem) => (
-                                    <MenuItem value={elem.LicenceType}>{elem.LicenceType}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <TextField label="Licence Type" value={selectedLicence.license_type} disabled={true} fullWidth/>
                     </Box>
                     <Box sx={{ marginTop: 2 }}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>

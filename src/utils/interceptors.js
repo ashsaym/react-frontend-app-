@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { refreshToken,LOGOUT } from '../store/actions';
-
+import { refreshToken, LOGOUT } from '../store/actions';
 
 import configData from '../config';
 import { store } from '../store';
@@ -29,15 +28,15 @@ const onResponse = (response) => {
 
 const onResponseError = async (error) => {
     if (error.response) {
+      
         // Access Token was expired
-        if(error.response.code==="token_not_valid"){
-
+        if (error.response.data[0].code === 'token_not_valid') {
             dispatch({
-                type:LOGOUT
-            })
+                type: LOGOUT
+            });
         }
 
-        if (error.response.status === 401 && error.response.data.messages[0].message === 'Token is invalid or expired') {
+        if (error.response.status === 401 && error.response.data[0].code === 'token_not_valid') {
             const state = store.getState();
             const access_token = state.account.access_token;
             const refresh_token = state.account.refresh_token;

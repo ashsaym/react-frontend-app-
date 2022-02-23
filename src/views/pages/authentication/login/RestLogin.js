@@ -116,6 +116,7 @@ const RestLogin = (props, { ...others }) => {
                             password: values.password
                         })
                             .then(function (response) {
+                       
                                 if (response.data.refresh) {
                                     setFormSubmitting(false);
                                     setLoginFailed(false);
@@ -138,17 +139,16 @@ const RestLogin = (props, { ...others }) => {
                                     setSubmitting(false);
                                 }
                             })
-                            .catch( (error)=> {
+                            .catch((error) => {
                                 console.log(error)
                                 setLoginFailed(true);
                                 setFormSubmitting(false);
-                        
+
                                 setStatus({ success: false });
                                 setErrors({ submit: error.response.non_field_errors });
                                 setSubmitting(false);
                             });
                     } catch (err) {
-                    
                         console.error(err);
                         if (scriptedRef.current) {
                             setStatus({ success: false });
