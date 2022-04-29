@@ -27,33 +27,38 @@ const onResponse = (response) => {
 };
 
 const onResponseError = async (error) => {
+    console.log(error.response);
+
     if (error.response) {
-      
         // Access Token was expired
-        if (error.response.data[0].code === 'token_not_valid') {
+        if (error.response.status === 500) {
+            console.log('Status 500 error');
+        }
+
+        if (error.response.data[1].detail === 'bad_authorization_header' || error.response.data[1].code === 'token_not_valid') {
             dispatch({
                 type: LOGOUT
             });
         }
 
-        if (error.response.status === 401 && error.response.data[0].code === 'token_not_valid') {
-            const state = store.getState();
-            const access_token = state.account.access_token;
-            const refresh_token = state.account.refresh_token;
+        // if (error.response.status === 401 && error.response.data[0].code === 'token_not_valid') {
+        //     const state = store.getState();
+        //     const access_token = state.account.access_token;
+        //     const refresh_token = state.account.refresh_token;
 
-            try {
-                const rs = await axios.post(`${API_URL}Token/renew`, {
-                    refresh_token: refresh_token
-                });
+        //     try {
+        //         const rs = await axios.post(`${API_URL}Token/renew`, {
+        //             refresh_token: refresh_token
+        //         });
 
-                const access_token = rs.data.access;
-                dispatch(refreshToken(access_token));
+        //         const access_token = rs.data.access;
+        //         dispatch(refreshToken(access_token));
 
-                return;
-            } catch (_error) {
-                return Promise.reject(_error);
-            }
-        }
+        //         return;
+        //     } catch (_error) {
+        //         return Promise.reject(_error);
+        //     }
+        // }
     }
     return Promise.reject(error);
 };

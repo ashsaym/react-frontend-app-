@@ -110,7 +110,7 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
                 setLicenceTypes(response.data.results);
             })
             .catch((error) => {
-                alert(error.message);
+                console.log(error.message);
             });
     };
     const deleteHandler = async () => {
@@ -284,7 +284,7 @@ export default function DataGridAPI({ loadNewData, tableDataWithAutocomplete, se
                     </Box>
 
                     <Box sx={{ width: 400, marginTop: 2 }}>
-                        <TextField label="Licence Type" value={selectedLicence.license_type} disabled={true} fullWidth/>
+                        <TextField label="Licence Type" value={selectedLicence.license_type} disabled={true} fullWidth />
                     </Box>
                     <Box sx={{ marginTop: 2 }}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>

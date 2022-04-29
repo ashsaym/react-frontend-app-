@@ -31,7 +31,7 @@ const TableData = () => {
             setComUnits(res.data);
             setLoading(true);
         } catch (e) {
-            alert(e.message);
+            console.log(e.message);
         }
     };
 
